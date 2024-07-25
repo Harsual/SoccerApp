@@ -5,9 +5,16 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen name="index" />
       <Stack.Screen name="screens/IntroScreen" />
-      <Stack.Screen name="screens/LoginScreen" />
+      <Stack.Screen
+        name="screens/LoginScreen"
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="screens/LogoSplashScreen"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/OnboardingScreen"
         options={{ headerShown: false }}
       />
     </Stack>

@@ -11,7 +11,13 @@ import {
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
+  type?:
+    | "default"
+    | "title"
+    | "defaultSemiBold"
+    | "subtitle"
+    | "description"
+    | "link";
 };
 
 export function ThemedText({
@@ -25,7 +31,13 @@ export function ThemedText({
     Poppins_400Regular,
     Poppins_700Bold,
   });
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  let color;
+  if (type === "description")
+    color = useThemeColor(
+      { light: lightColor, dark: darkColor },
+      "description"
+    );
+  else color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
   if (!fontsLoaded) {
     return (
@@ -42,6 +54,7 @@ export function ThemedText({
           type === "title" ? styles.title : undefined,
           type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
           type === "subtitle" ? styles.subtitle : undefined,
+          type === "description" ? styles.description : undefined,
           type === "link" ? styles.link : undefined,
           style,
         ]}
@@ -64,15 +77,23 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_700Bold",
   },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    lineHeight: 32,
-    fontFamily: "Poppins_700Bold",
+    fontSize: 24,
+    //fontWeight: "bold",
+    //lineHeight: 32,
+    fontWeight: "600",
+    fontFamily: "Poppins_700Regular",
   },
   subtitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    fontFamily: "Poppins_400Regular",
+    fontSize: 16,
+    //fontWeight: "bold",
+    fontWeight: "200",
+    fontFamily: "Poppins_700Regular",
+  },
+  description: {
+    fontSize: 13,
+    lineHeight: 16,
+    fontStyle: "normal",
+    fontWeight: 400,
   },
   link: {
     lineHeight: 30,

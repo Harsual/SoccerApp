@@ -6,17 +6,17 @@ import { Link, router } from "expo-router";
 import { Colors } from "@/src/constants/Colors";
 import { ThemedView } from "@/src/components/ThemedView";
 import { ThemedText } from "@/src/components/ThemedText";
-import Logo from "@/src/assets/LogoIcon.svg";
+import Logo from "@/src/assets/icons/LogoIcon.svg";
 import { ROUTES } from "../navigationConstants";
 
 export default function LogoSplashScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace(ROUTES.LOGIN);
-    }, 6000);
+      router.replace(ROUTES.ONBOARDING);
+    }, 2000);
 
     return () => clearTimeout(timer);
-  }, [router]);
+  }, []);
 
   return (
     <ThemedView style={styles.container}>

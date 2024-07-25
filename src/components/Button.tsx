@@ -1,18 +1,56 @@
 import React from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
+import { Text, StyleSheet, Pressable, View, ButtonProps } from "react-native";
+import { useColorScheme } from "@/src/hooks/useColorScheme";
+import { Colors } from "@/src/constants/Colors";
+import { useThemeColor } from "@/src/hooks/useThemeColor";
 
-interface ButtonProps {
-  onPress: () => void;
+export type NewButtonProps = ButtonProps & {
+  onPress?: () => void;
   title?: string;
-}
+  bottomMargin?: number;
+  style?: object;
+};
 
-export default function Button({ onPress, title = "button" }: ButtonProps) {
+export default function Button({
+  bottomMargin,
+  onPress,
+  title = "button",
+  style,
+}: NewButtonProps) {
   //const { onPress, title = 'Save' } = props;
-  return (
-    <Pressable style={styles.button} onPress={onPress}>
-      <Text style={styles.text}>{title}</Text>
-    </Pressable>
-  );
+  // return (
+  //   <Pressable style={styles.button} onPress={onPress}>
+  //     <Text style={styles.text}>{title}</Text>
+  //   </Pressable>
+  // );
+
+  const color = useThemeColor({}, "tabIconSelected");
+
+  if (onPress) {
+    return (
+      <Pressable
+        onPress={onPress}
+        style={[
+          style,
+          styles.button,
+          { backgroundColor: color, marginBottom: bottomMargin },
+        ]}
+      >
+        <Text style={styles.text}>{title}</Text>
+      </Pressable>
+    );
+  } else {
+    return (
+      <View
+        style={[
+          styles.button,
+          { backgroundColor: color, marginBottom: bottomMargin },
+        ]}
+      >
+        <Text style={styles.text}>{title}</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -21,9 +59,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: 4,
+    borderRadius: 15,
     elevation: 3,
-    backgroundColor: "black",
   },
   text: {
     fontSize: 16,

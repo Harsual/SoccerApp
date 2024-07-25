@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 import { Redirect } from "expo-router";
+// index.ts
 
 export default function Index() {
   return <Redirect href={"/screens/LogoSplashScreen"}></Redirect>;
