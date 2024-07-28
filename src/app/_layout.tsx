@@ -17,6 +17,10 @@ export default function RootLayout() {
         name="screens/OnboardingScreen"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="screens/SignUpScreen"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

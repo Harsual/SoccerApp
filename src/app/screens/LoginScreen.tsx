@@ -12,6 +12,7 @@ import {
 import Feather from "@expo/vector-icons/Feather";
 import Button from "@/src/components/Button";
 import { Link } from "expo-router";
+import PasswordInput from "@/src/components/PasswordInput";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState<string>("");
@@ -26,6 +27,11 @@ export default function LoginScreen() {
     // Perform login logic here
     console.log("Email:", email);
     console.log("Password:", password);
+    fetch("http://localhost:4000/api")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
   };
 
   return (
@@ -46,7 +52,7 @@ export default function LoginScreen() {
         <ThemedText type="description" style={styles.inputDescription}>
           Password
         </ThemedText>
-        <View style={styles.passwordContainer}>
+        {/* <View style={styles.passwordContainer}>
           <TextInput
             style={styles.input}
             //placeholder="Password"
@@ -64,7 +70,8 @@ export default function LoginScreen() {
               color="grey"
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
+        <PasswordInput></PasswordInput>
       </View>
       <Link
         href={"/IntroScreen"}
@@ -80,7 +87,7 @@ export default function LoginScreen() {
       <View style={{ flexDirection: "row", marginVertical: 20 }}>
         <ThemedText type="description"> Don't have an account?</ThemedText>
         <Link
-          href={"/IntroScreen"}
+          href={"/screens/SignUpScreen"}
           style={{
             textDecorationLine: "underline",
             color: "#0EAD69",
@@ -106,7 +113,8 @@ const styles = StyleSheet.create({
     width: "90%",
     margin: 20,
     backgroundColor: "white",
-    paddingBottom: 16,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
     borderRadius: 20,
   },
   title: {
@@ -116,15 +124,15 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
   input: {
-    width: "80%",
+    //width: "80%",
     //alignSelf: "center",
     height: 30,
-    marginLeft: 20,
+    //marginLeft: 20,
 
     borderColor: "#F0F0F0",
     //borderWidth: 1,
     //borderRadius: 30,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     color: "#273240",
     //paddingHorizontal: 8,
     //paddingBottom: 16,
@@ -138,8 +146,7 @@ const styles = StyleSheet.create({
   },
 
   inputDescription: {
-    paddingTop: 16,
-    paddingLeft: 20,
+    paddingTop: 20,
     //color: "#898F95",
   },
 
