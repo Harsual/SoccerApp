@@ -15,6 +15,7 @@ import DropShadow from "react-native-drop-shadow";
 import { Shadow } from "react-native-shadow-2";
 import { ThemedText } from "./ThemedText";
 import Feather from "@expo/vector-icons/Feather";
+import { PhoneInputProps } from "react-phone-input-2";
 
 // Define the Country interface
 // interface PhoneInputProps {
@@ -22,8 +23,16 @@ import Feather from "@expo/vector-icons/Feather";
 //     setListShown: React.Dispatch<React.SetStateAction<boolean>>;
 //   }
 
-export default function PasswordInput() {
-  const [password, setPassword] = useState<string>("");
+interface PasswordInputProps {
+  password: string;
+  setPassword: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+export default function PasswordInput({
+  password,
+  setPassword,
+}: PasswordInputProps) {
+  //const [password, setPassword] = useState<string>("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {

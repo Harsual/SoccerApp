@@ -71,7 +71,10 @@ export default function LoginScreen() {
             />
           </TouchableOpacity>
         </View> */}
-        <PasswordInput></PasswordInput>
+        <PasswordInput
+          password={password}
+          setPassword={setPassword}
+        ></PasswordInput>
       </View>
       <Link
         href={"/IntroScreen"}

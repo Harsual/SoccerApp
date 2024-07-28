@@ -29,11 +29,15 @@ interface Country {
 interface PhoneInputProps {
   listShown: boolean;
   setListShown: React.Dispatch<React.SetStateAction<boolean>>;
+  number: string | null;
+  setNumber: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export default function PhoneInput({
   listShown,
   setListShown,
+  number,
+  setNumber,
 }: PhoneInputProps) {
   // const [iconName, setIconName] = useState<"caretdown" | "caretup">(
   //   "caretdown"
@@ -44,6 +48,8 @@ export default function PhoneInput({
     isoCode: "ca",
   });
 
+  const [phoneNumber, setPhoneNumber] = useState("");
+
   const listRef = useRef(null);
 
   // Function to toggle the icon name
@@ -52,11 +58,6 @@ export default function PhoneInput({
     //   prevIconName === "caretdown" ? "caretup" : "caretdown"
     // );
     setListShown(!listShown);
-  };
-
-  const canada = {
-    name: "canada",
-    flag: "🇨🇦",
   };
 
   //const [listShown, setListShown] = useState(false);
@@ -286,11 +287,14 @@ export default function PhoneInput({
     setListShown(false);
   };
 
-  const hideDropdown = () => {
-    // if (listShown) {
-    //   setListShown(false);
-    // }
-    console.log("hanlding");
+  const handleNumber = (input: string) => {
+    setPhoneNumber(input);
+    const numberInfo =
+      selectedCountry.isoCode + "," + selectedCountry.code + "," + input;
+    setNumber(numberInfo);
+
+    //console.log("input:" + input);
+    //console.log(numberInfo);
   };
 
   return (
@@ -339,9 +343,9 @@ export default function PhoneInput({
         </Shadow>
         <TextInput
           style={styles.input}
-          placeholder="Number"
-          //value="test"
-          //onChangeText={setEmail}
+          placeholder="number"
+          value={phoneNumber}
+          onChangeText={handleNumber}
           keyboardType="phone-pad"
           autoCapitalize="none"
         />

@@ -18,20 +18,78 @@ import CountryCodeDropdownPicker from "react-native-dropdown-country-picker";
 import PhoneInput from "@/src/components/PhoneInput";
 import PasswordInput from "@/src/components/PasswordInput";
 import { ExternalLink } from "@/src/components/ExternalLink";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
-export default function LoginScreen() {
-  const handleLogin = () => {};
-  const [phone, setPhone] = React.useState("");
+export default function SignUpScreen() {
+  //const [phone, setPhone] = React.useState("");
   const [listShown, setListShown] = useState(false);
+  const [numberInfo, setNumberInfo] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  function handlePhoneChange(value: string) {
-    setPhone(value);
-  }
   const hideDropdown = () => {
     if (listShown) {
       setListShown(false);
     }
     console.log("hanlding");
+  };
+
+  const handleSignUp = async () => {
+    console.log("login");
+    if (!numberInfo || !email || !password) {
+      setErrorMessage("Please fill in all fields.");
+    } else if (!email.includes("@")) {
+      setErrorMessage("Please Enter a valid email");
+    } else {
+      setErrorMessage("");
+      try {
+        // Send sign-up request
+        const response = await axios.post("http://localhost:4000/signup", {
+          numberInfo: numberInfo,
+          email: email,
+          password: password,
+        });
+
+        const { token } = response.data;
+        // Store the JWT securely
+        await SecureStore.setItemAsync("jwt", token);
+
+        // Redirect to another screen or update the UI
+        console.log("Signed up successfully");
+      } catch (err) {
+        //setError('Sign-up failed');
+        console.log("signup failed");
+      }
+      // fetch("http://localhost:4000/signUp", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     numberInfo: numberInfo,
+      //     email: email,
+      //     password: password,
+      //   }),
+      // })
+      //   .then((response) => {
+      //     if (!response.ok) {
+      //       throw new Error("Network response was not ok");
+      //     }
+      //     return response.json();
+      //   })
+      // .then((data) => {
+      //   setResult(data.paths);
+      //   setDMenuIsOpen(true);
+      // })
+      // .catch((error) => {
+      //   console.error("There was a problem with your fetch operation:", error);
+      // });
+
+      console.log(email);
+      console.log(password);
+    }
   };
 
   return (
@@ -41,7 +99,7 @@ export default function LoginScreen() {
         <View style={styles.account}>
           <ThemedText type="description">Already have an Account? </ThemedText>
           <Link
-            href={"/screens/SignUpScreen"}
+            href={"/screens/LoginScreen"}
             style={{
               //textDecorationLine: "underline",
               color: "#0EAD69",
@@ -59,22 +117,27 @@ export default function LoginScreen() {
           <PhoneInput
             listShown={listShown}
             setListShown={setListShown}
+            number={numberInfo ?? ""}
+            setNumber={setNumberInfo}
           ></PhoneInput>
           <ThemedText type="description" style={styles.inputDescription}>
             Email address
           </ThemedText>
           <TextInput
             style={styles.input}
-            //placeholder="Password"
-            //value={password}
-            //onChangeText={setPassword}
+            //placeholder="Email"
+            value={email ?? ""}
+            onChangeText={setEmail}
             //</View>secureTextEntry={!isPasswordVisible}
           ></TextInput>
 
           <ThemedText type="description" style={styles.inputDescription}>
             Password
           </ThemedText>
-          <PasswordInput></PasswordInput>
+          <PasswordInput
+            password={password ?? ""}
+            setPassword={setPassword}
+          ></PasswordInput>
           {/* <TextInput
             style={styles.input}
             //placeholder="Password"
@@ -84,7 +147,7 @@ export default function LoginScreen() {
           ></TextInput> */}
           {/* <PhoneInput country={"us"} value={phone} onChange={setPhone} /> */}
         </View>
-
+        <Text style={{ color: "red" }}>{errorMessage}</Text>
         <ThemedText type="description" style={{ paddingTop: 20 }}>
           By signing up, you agree to Cilckora's
         </ThemedText>
@@ -115,7 +178,7 @@ export default function LoginScreen() {
 
         <Button
           title="Sign Up"
-          onPress={handleLogin}
+          onPress={handleSignUp}
           style={{ width: "90%" }}
         />
 
