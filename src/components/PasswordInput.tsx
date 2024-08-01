@@ -6,31 +6,19 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
-//import "/node_modules/flag-icons/css/flag-icons.min.css";
-import Icon from "react-native-ico-flags";
-import CountryFlag from "react-native-country-flag";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import DropShadow from "react-native-drop-shadow";
-import { Shadow } from "react-native-shadow-2";
-import { ThemedText } from "./ThemedText";
-import Feather from "@expo/vector-icons/Feather";
-import { PhoneInputProps } from "react-phone-input-2";
 
-// Define the Country interface
-// interface PhoneInputProps {
-//     listShown: boolean;
-//     setListShown: React.Dispatch<React.SetStateAction<boolean>>;
-//   }
+import Feather from "@expo/vector-icons/Feather";
 
 interface PasswordInputProps {
-  password: string;
-  setPassword: React.Dispatch<React.SetStateAction<string | null>>;
+  password: string | undefined;
+  setPassword: React.Dispatch<React.SetStateAction<string | undefined>>;
+  textContextType?: "password" | "newPassword" | "none";
 }
 
 export default function PasswordInput({
   password,
   setPassword,
+  textContextType = "password",
 }: PasswordInputProps) {
   //const [password, setPassword] = useState<string>("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -47,6 +35,7 @@ export default function PasswordInput({
         value={password}
         onChangeText={setPassword}
         secureTextEntry={!isPasswordVisible}
+        textContentType={textContextType}
       />
       <TouchableOpacity
         onPress={togglePasswordVisibility}

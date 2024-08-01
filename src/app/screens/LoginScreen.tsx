@@ -11,29 +11,84 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import Button from "@/src/components/Button";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { ROUTES } from "../navigationConstants";
 import PasswordInput from "@/src/components/PasswordInput";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string | undefined>();
+  const [password, setPassword] = useState<string | undefined>();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev);
   };
 
-  const handleLogin = () => {
+  async function storeToken(token: string) {
+    try {
+      await SecureStore.setItemAsync("authToken", token);
+      console.log("TOKEN STORED");
+    } catch (error) {
+      console.error("Failed to store the token", error);
+    }
+  }
+
+  async function getToken() {
+    try {
+      const token = await SecureStore.getItemAsync("authToken");
+      return token;
+    } catch (error) {
+      console.error("Failed to retrieve the token", error);
+      return null;
+    }
+  }
+
+  async function deleteToken() {
+    try {
+      await SecureStore.deleteItemAsync("authToken");
+    } catch (error) {
+      console.error("Failed to delete the token", error);
+    }
+  }
+
+  const handleLogin = async () => {
     // Perform login logic here
     console.log("Email:", email);
     console.log("Password:", password);
-    fetch("http://localhost:4000/api")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-  };
 
+    if (!email || !password) {
+      setErrorMessage("Please fill in all fields.");
+    }
+    setErrorMessage("");
+    try {
+      // Send sign-up request
+      const response = await axios.post("http://localhost:4000/login", {
+        email: email,
+        password: password,
+      });
+
+      const { token, message } = response.data;
+      storeToken(token);
+      // Store the JWT securely
+      //await SecureStore.setItemAsync("jwt", token);
+      console.log(message);
+      // Redirect to another screen or update the UI
+      //router.push(ROUTES.VERIFY);
+      router.push({
+        pathname: ROUTES.INTRO,
+        params: { email: email },
+      });
+      //console.log("Signed up successfully");
+    } catch (err) {
+      //setError('Sign-up failed');
+
+      setErrorMessage("email or password is incorrect");
+      console.log("login failed");
+    }
+  };
   return (
     <ThemedView style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -76,8 +131,9 @@ export default function LoginScreen() {
           setPassword={setPassword}
         ></PasswordInput>
       </View>
+      <Text style={{ color: "red" }}>{errorMessage}</Text>
       <Link
-        href={"/IntroScreen"}
+        href={"/screens/ForgotPasswordScreen"}
         style={{
           textDecorationLine: "underline",
           color: "#898F95",

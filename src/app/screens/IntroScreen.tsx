@@ -12,8 +12,6 @@ export default function IntroScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Start your footballing journey today!</Text>
-      <Button title="create Account" onPress={navigateCreateAccount} />
-      <Link href={"/screens/LoginScreen"}>login</Link>
     </View>
   );
 }

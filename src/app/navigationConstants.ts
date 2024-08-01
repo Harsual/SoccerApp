@@ -6,4 +6,9 @@ export const ROUTES = {
     LOGIN: "screens/LoginScreen",
     PROFILE: 'profile',
     SETTINGS: 'settings',
+    VERIFY: "screens/VerificationScreen",
+    SUCCESS: "screens/SuccessScreen",
+    FORGOT: "screens/ForgotPasswordScreen",
+    RESET: "screens/ResetPasswordScreen",
+    INTRO:"screens/IntroScreen"
   }

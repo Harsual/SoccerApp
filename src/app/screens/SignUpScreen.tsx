@@ -11,7 +11,8 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import Button from "@/src/components/Button";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { ROUTES } from "../navigationConstants";
 import CountryCodeDropdownPicker from "react-native-dropdown-country-picker";
 //import PhoneInput from "react-phone-input-2";
 //import "react-phone-input-2/lib/style.css";
@@ -26,7 +27,7 @@ export default function SignUpScreen() {
   const [listShown, setListShown] = useState(false);
   const [numberInfo, setNumberInfo] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | undefined>();
   const [errorMessage, setErrorMessage] = useState("");
 
   const hideDropdown = () => {
@@ -37,7 +38,6 @@ export default function SignUpScreen() {
   };
 
   const handleSignUp = async () => {
-    console.log("login");
     if (!numberInfo || !email || !password) {
       setErrorMessage("Please fill in all fields.");
     } else if (!email.includes("@")) {
@@ -52,43 +52,21 @@ export default function SignUpScreen() {
           password: password,
         });
 
-        const { token } = response.data;
+        const { message } = response.data;
         // Store the JWT securely
-        await SecureStore.setItemAsync("jwt", token);
-
+        //await SecureStore.setItemAsync("jwt", token);
+        console.log(message);
         // Redirect to another screen or update the UI
-        console.log("Signed up successfully");
+        //router.push(ROUTES.VERIFY);
+        router.push({
+          pathname: ROUTES.VERIFY,
+          params: { email: email },
+        });
+        //console.log("Signed up successfully");
       } catch (err) {
         //setError('Sign-up failed');
         console.log("signup failed");
       }
-      // fetch("http://localhost:4000/signUp", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     numberInfo: numberInfo,
-      //     email: email,
-      //     password: password,
-      //   }),
-      // })
-      //   .then((response) => {
-      //     if (!response.ok) {
-      //       throw new Error("Network response was not ok");
-      //     }
-      //     return response.json();
-      //   })
-      // .then((data) => {
-      //   setResult(data.paths);
-      //   setDMenuIsOpen(true);
-      // })
-      // .catch((error) => {
-      //   console.error("There was a problem with your fetch operation:", error);
-      // });
-
-      console.log(email);
-      console.log(password);
     }
   };
 
@@ -137,6 +115,7 @@ export default function SignUpScreen() {
           <PasswordInput
             password={password ?? ""}
             setPassword={setPassword}
+            textContextType="none"
           ></PasswordInput>
           {/* <TextInput
             style={styles.input}

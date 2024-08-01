@@ -4,7 +4,10 @@ export default function RootLayout() {
   return (
     <Stack>
       <Stack.Screen name="index" />
-      <Stack.Screen name="screens/IntroScreen" />
+      <Stack.Screen
+        name="screens/IntroScreen"
+        //options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="screens/LoginScreen"
         options={{ headerShown: false }}
@@ -19,6 +22,23 @@ export default function RootLayout() {
       />
       <Stack.Screen
         name="screens/SignUpScreen"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/VerificationScreen"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/SuccessScreen"
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="screens/ForgotPasswordScreen"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="screens/ResetPasswordScreen"
         options={{ headerShown: false }}
       />
     </Stack>
