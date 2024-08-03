@@ -60,7 +60,7 @@ export default function ResetPasswordScreen() {
         //console.log("Signed up successfully");
       } catch (err) {
         //setError('Sign-up failed');
-        console.log("email sending failed");
+        console.log("resetting Failed");
       }
     }
   };
