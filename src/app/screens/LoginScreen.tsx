@@ -64,7 +64,7 @@ export default function LoginScreen() {
     }
     setErrorMessage("");
     try {
-      // Send sign-up request
+      // Send login request
       const response = await axios.post("http://localhost:4000/login", {
         email: email,
         password: password,
@@ -75,11 +75,9 @@ export default function LoginScreen() {
       // Store the JWT securely
       //await SecureStore.setItemAsync("jwt", token);
       console.log(message);
-      // Redirect to another screen or update the UI
-      //router.push(ROUTES.VERIFY);
+
       router.push({
-        pathname: ROUTES.INTRO,
-        params: { email: email },
+        pathname: ROUTES.HOME,
       });
       //console.log("Signed up successfully");
     } catch (err) {

@@ -3,7 +3,7 @@ import { Redirect } from "expo-router";
 // index.ts
 
 export default function Index() {
-  return <Redirect href={"/screens/LogoSplashScreen"}></Redirect>;
+  return <Redirect href={"/Home"}></Redirect>;
 }
 {
   /* <View
