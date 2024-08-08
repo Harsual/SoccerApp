@@ -31,9 +31,9 @@ export default function Button({
       <Pressable
         onPress={onPress}
         style={[
-          style,
-          styles.button,
           { backgroundColor: color, marginBottom: bottomMargin },
+          styles.button,
+          style,
         ]}
       >
         <Text style={styles.text}>{title}</Text>
@@ -43,8 +43,9 @@ export default function Button({
     return (
       <View
         style={[
-          styles.button,
           { backgroundColor: color, marginBottom: bottomMargin },
+          styles.button,
+          style,
         ]}
       >
         <Text style={styles.text}>{title}</Text>
