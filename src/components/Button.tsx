@@ -9,6 +9,7 @@ export type NewButtonProps = ButtonProps & {
   title?: string;
   bottomMargin?: number;
   style?: object;
+  textStyle?: object;
 };
 
 export default function Button({
@@ -16,6 +17,7 @@ export default function Button({
   onPress,
   title = "button",
   style,
+  textStyle,
 }: NewButtonProps) {
   //const { onPress, title = 'Save' } = props;
   // return (
@@ -36,7 +38,7 @@ export default function Button({
           style,
         ]}
       >
-        <Text style={styles.text}>{title}</Text>
+        <Text style={[styles.text, textStyle]}>{title}</Text>
       </Pressable>
     );
   } else {
@@ -48,7 +50,7 @@ export default function Button({
           style,
         ]}
       >
-        <Text style={styles.text}>{title}</Text>
+        <Text style={[styles.text, textStyle]}>{title}</Text>
       </View>
     );
   }
