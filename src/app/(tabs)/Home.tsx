@@ -1,74 +1,104 @@
-import { Image, StyleSheet, Platform } from "react-native";
-
+import { StyleSheet, Platform, ScrollView, View } from "react-native";
+import { Image } from "expo-image";
 import { HelloWave } from "@/src/components/HelloWave";
 import ParallaxScrollView from "@/src/components/ParallaxScrollView";
 import { ThemedText } from "@/src/components/ThemedText";
 import { ThemedView } from "@/src/components/ThemedView";
 
+//import Compete from "@/src/assets/fields/field.jpg";
+
+const fields: any[] = [
+  {
+    name: "Community Center",
+    address: "testing123",
+    price: "30$/hr",
+    //image: require("src/assets/fields/field.jpeg"),
+  },
+
+  {
+    name: "Community Center",
+    address: "testing123",
+    price: "30$/hr",
+    //image: require("src/assets/fields/field.jpeg"),
+  },
+
+  {
+    name: "Community Center",
+    address: "testing123",
+    price: "30$/hr",
+    //image: require("src/assets/fields/field.jpeg"),
+  },
+];
+
 export default function Home() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Ahlan!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: "cmd + d", android: "cmd + m" })}
-          </ThemedText>{" "}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap Tap Tap the Explore tab to learn more about what's included in
-          this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{" "}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    // {settingsList.map((item, index) => (
+    //   <Pressable
+    //     onPress={() => handleSettingsPress(item)}
+    //     key={index}
+    //     style={styles.listItemContainer}
+    //   >
+    //     <FontAwesome
+    //       name={item.icon}
+    //       size={40}
+    //       //color={"#345351"}
+    //       style={{ opacity: 1, padding: 15 }}
+    //     ></FontAwesome>
+    //     <ThemedText style={styles.settingsText}>{item.name}</ThemedText>
+    //   </Pressable>
+    // ))}
+
+    <ScrollView style={styles.container}>
+      {fields.map((item, index) => (
+        <View style={styles.containerItem} key={index}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("../../assets/fields/field2.jpg")}
+              style={styles.image}
+            />
+          </View>
+          <ThemedText>{item.name}</ThemedText>
+          <View style={styles.description}>
+            <ThemedText type="description">{item.address}</ThemedText>
+            <ThemedText type="subtitle">{item.price}</ThemedText>
+          </View>
+        </View>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    //borderWidth: 5,
+    backgroundColor: "#F3FFFA",
+    paddingTop: 40,
+  },
+  containerItem: {
+    //borderWidth: 3,
+    //height: 200,
+    marginHorizontal: 15,
+    marginVertical: 7,
+    backgroundColor: "white",
+    borderRadius: 20,
+  },
+
+  imageContainer: {
+    //borderWidth: 2,
+    margin: 10,
+    height: 200,
+  },
+
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
+  },
+
+  description: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    //borderWidth: 3,
   },
 });
