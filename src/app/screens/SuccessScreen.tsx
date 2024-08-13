@@ -15,59 +15,6 @@ import VerifyInput from "@/src/components/VerifyInput";
 import SuccessIcon from "@/src/assets/icons/Success.svg";
 
 export default function SuccessScreen() {
-  //const [phone, setPhone] = React.useState("");
-
-  //const router = useRouter();
-
-  //   const handleVerify = async () => {
-  //     const codeVerify = code.join("");
-  //     console.log(codeVerify.length);
-  //     if (codeVerify.length < 4) {
-  //       setErrorMessage("Please fill all fields");
-  //     } else {
-  //       setErrorMessage("");
-  //       console.log("handleVerify");
-  //       try {
-  //         // Send sign-up request
-  //         const response = await axios.post("http://localhost:4000/verify", {
-  //           code: codeVerify,
-  //           email: email,
-  //         });
-  //         //const { token } = response.data;
-  //         // Store the JWT securely
-  //         //await SecureStore.setItemAsync("jwt", token);
-  //         // Redirect to another screen or update the UI
-  //         console.log("Verified successfully");
-  //       } catch (err) {
-  //         //setError('Sign-up failed');
-  //         console.log("Verification failed");
-  //       }
-  //     }
-  //     // if (!numberInfo || !email || !password) {
-  //     //   setErrorMessage("Please fill in all fields.");
-  //     // } else if (!email.includes("@")) {
-  //     //   setErrorMessage("Please Enter a valid email");
-  //     // } else {
-  //     //   setErrorMessage("");
-  //     //   try {
-  //     //     // Send sign-up request
-  //     //     const response = await axios.post("http://localhost:4000/signup", {
-  //     //       numberInfo: numberInfo,
-  //     //       email: email,
-  //     //       password: password,
-  //     //     });
-  //     //     const { token } = response.data;
-  //     //     // Store the JWT securely
-  //     //     await SecureStore.setItemAsync("jwt", token);
-  //     //     // Redirect to another screen or update the UI
-  //     //     console.log("Signed up successfully");
-  //     //   } catch (err) {
-  //     //     //setError('Sign-up failed');
-  //     //     console.log("signup failed");
-  //     //   }
-  //     // }
-  //   };
-
   return (
     <ThemedView style={styles.container}>
       <SuccessIcon></SuccessIcon>

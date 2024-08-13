@@ -2,7 +2,7 @@
 export const ROUTES = {
     LOGO_SPLASH: "screens/LogoSplashScreen",
     ONBOARDING: "screens/OnboardingScreen",
-    HOME: "index",
+    HOME: "(tabs)/Home",
     LOGIN: "screens/LoginScreen",
     PROFILE: 'profile',
     SETTINGS: 'settings',

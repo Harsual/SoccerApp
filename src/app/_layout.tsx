@@ -44,7 +44,7 @@ export default function RootLayout() {
 
       <Stack.Screen
         name="screens/CreateProfileScreen"
-        options={{ headerShown: false }}
+        //options={{ headerShown: false }}
       />
 
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

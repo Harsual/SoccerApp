@@ -1,7 +1,7 @@
 // app/screens/LoginScreen.tsx
 import { ThemedText } from "@/src/components/ThemedText";
 import { ThemedView } from "@/src/components/ThemedView";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Platform,
+  Pressable,
+  Modal,
+  Alert,
 } from "react-native";
 import Button from "@/src/components/Button";
 import { Link, router } from "expo-router";
@@ -24,55 +28,89 @@ import * as SecureStore from "expo-secure-store";
 //import ProfilePic from "@/src/assets/icons/ProfilePic.svg";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import * as Location from "expo-location";
+import CityInput from "@/src/components/CityInput";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function CreateProfileScreen() {
-  //const [phone, setPhone] = React.useState("");
-  const [listShown, setListShown] = useState(false);
-  const [numberInfo, setNumberInfo] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
-  const [password, setPassword] = useState<string | undefined>();
+  const [birthdate, setBirthDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+  const [firstName, setFirstName] = useState<string | undefined>();
+  const [lastName, setLastName] = useState<string | undefined>();
   const [errorMessage, setErrorMessage] = useState("");
+  const [location, setLocation] = useState<
+    Location.LocationObject | undefined
+  >();
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const hideDropdown = () => {
-    if (listShown) {
-      setListShown(false);
-    }
-    console.log("hanlding");
-  };
+  const onChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
+      if (event.type === "dismissed") {
+        // Handle the cancel event
+        setShowPicker(false);
+        return;
+      }
 
-  const handleSignUp = async () => {
-    if (!numberInfo || !email || !password) {
-      setErrorMessage("Please fill in all fields.");
-    } else if (!email.includes("@")) {
-      setErrorMessage("Please Enter a valid email");
-    } else {
-      setErrorMessage("");
-      try {
-        // Send sign-up request
-        const response = await axios.post("http://localhost:4000/signup", {
-          numberInfo: numberInfo,
-          email: email,
-          password: password,
-        });
-
-        const { message } = response.data;
-        // Store the JWT securely
-        //await SecureStore.setItemAsync("jwt", token);
-        console.log(message);
-        // Redirect to another screen or update the UI
-        //router.push(ROUTES.VERIFY);
-        router.push({
-          pathname: ROUTES.VERIFY,
-          params: { email: email },
-        });
-        //console.log("Signed up successfully");
-      } catch (err) {
-        //setError('Sign-up failed');
-        console.log("signup failed");
+      if (event.type === "set") {
+        setBirthDate(selectedDate ?? birthdate);
+        setShowPicker(false); // Close the modal after date is picked
       }
     }
+
+    //const currentDate = selectedDate || birthdate;
+    //setShowPicker(Platform.OS === "ios");
+    setBirthDate(selectedDate ?? birthdate);
+    //setShowPicker(false);
   };
 
+  const handleShowDatePicker = () => {
+    setShowPicker(!showPicker);
+  };
+
+  function isOver18(dateOfBirth: Date): boolean {
+    const today = new Date();
+    const eighteenYearsAgo = new Date(
+      today.getFullYear() - 18,
+      today.getMonth(),
+      today.getDate()
+    );
+
+    return dateOfBirth <= eighteenYearsAgo;
+  }
+
+  const handleAlertPress = () => {
+    router.replace(ROUTES.SUCCESS);
+  };
+
+  const handleProfileCreate = async () => {
+    if (!firstName || !lastName || !selectedCity) {
+      setErrorMessage("Please fill in all fields");
+      console.log("A field was not filled");
+      return;
+    }
+
+    if (selectedCity !== "St John's") {
+      //Alert("")
+      Alert.alert(
+        "City not avialable",
+        "The App is not available in your city yet. We will keep your email to notify you when it is available. you can delete your accounts from the settings.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => handleAlertPress },
+        ],
+        { cancelable: true } // Allows the alert to be dismissed by tapping outside of it
+      );
+    } else if (!isOver18(birthdate)) {
+      setErrorMessage("Sorry, you're not old enough to use the App");
+    } else {
+      router.replace(ROUTES.SUCCESS);
+    }
+  };
   return (
     <ThemedView style={styles.container}>
       <Text style={styles.title}>Create profile</Text>
@@ -107,8 +145,8 @@ export default function CreateProfileScreen() {
             <TextInput
               style={styles.input}
               //placeholder="Email"
-              value={email ?? ""}
-              onChangeText={setEmail}
+              value={firstName ?? ""}
+              onChangeText={setFirstName}
               //</View>secureTextEntry={!isPasswordVisible}
             ></TextInput>
           </View>
@@ -119,47 +157,94 @@ export default function CreateProfileScreen() {
             <TextInput
               style={styles.input}
               //placeholder="Email"
-              value={email ?? ""}
-              onChangeText={setEmail}
+              value={lastName ?? ""}
+              onChangeText={setLastName}
               //</View>secureTextEntry={!isPasswordVisible}
             ></TextInput>
           </View>
         </View>
 
         <ThemedText type="description" style={styles.inputDescription}>
-          Username
+          City
         </ThemedText>
-        <TextInput
-          style={styles.input}
-          //placeholder="Email"
-          value={email ?? ""}
-          onChangeText={setEmail}
-          //</View>secureTextEntry={!isPasswordVisible}
-        ></TextInput>
+        <CityInput setSelectedCity={setSelectedCity}></CityInput>
         <ThemedText type="description" style={styles.inputDescription}>
-          Location
+          Date of Birth
         </ThemedText>
-        <TextInput
+        <Pressable
+          style={{ borderBottomWidth: 2 }}
+          onPress={handleShowDatePicker}
+        >
+          <ThemedText>{birthdate.toDateString()}</ThemedText>
+        </Pressable>
+        <View>
+          {showPicker && (
+            <DateTimePicker
+              value={birthdate}
+              mode="date"
+              //is24Hour={true}
+              display="inline"
+              onChange={onChange}
+              style={{
+                position: "absolute",
+                backgroundColor: "white",
+                borderColor: "#F0F0F0",
+
+                //borderBottomWidth: 2,
+
+                //alignSelf: "flex-start",
+                //position: "absolute",
+                //width: "auto",
+                borderWidth: 3,
+              }}
+              //onTouchCancel={() => setShowPicker(false)}
+            />
+
+            // <Modal
+            //   transparent={true}
+            //   animationType="slide"
+            //   visible={showPicker}
+            //   onRequestClose={() => setShowPicker(false)}
+            // >
+            //   <View /*style={styles.modalBackground}*/>
+            //     <View /*style={styles.modalContent}*/>
+            //       <DateTimePicker
+            //         testID="dateTimePicker"
+            //         value={birthdate}
+            //         mode="date"
+            //         display="spinner"
+            //         onChange={onChange}
+            //         //style={styles.datePicker}
+            //       />
+            //       <TouchableOpacity
+            //         //style={styles.closeButton}
+            //         onPress={() => setShowPicker(false)}
+            //       >
+            //         <Text /*style={styles.closeButtonText}*/>Done</Text>
+            //       </TouchableOpacity>
+            //     </View>
+            //   </View>
+            // </Modal>
+          )}
+        </View>
+
+        {/* <TextInput
           style={styles.input}
-          //placeholder="Email"
-          value={email ?? ""}
-          onChangeText={setEmail}
+          //placeholder=""
+          value={birthdate.toDateString() ?? ""}
+          onFocus={showDatePicker}
+          editable={false}
+          //onChangeText={setEmail}
           //</View>secureTextEntry={!isPasswordVisible}
-        ></TextInput>
-        <ThemedText type="description" style={styles.inputDescription}>
-          Age
-        </ThemedText>
-        <TextInput
-          style={styles.input}
-          //placeholder="Email"
-          value={email ?? ""}
-          onChangeText={setEmail}
-          //</View>secureTextEntry={!isPasswordVisible}
-        ></TextInput>
+        ></TextInput> */}
       </View>
       <Text style={{ color: "red" }}>{errorMessage}</Text>
 
-      <Button title="Sign Up" onPress={handleSignUp} style={{ width: "90%" }} />
+      <Button
+        title="Create Profile"
+        onPress={handleProfileCreate}
+        style={{ width: "90%" }}
+      />
     </ThemedView>
   );
 }
@@ -170,6 +255,11 @@ const styles = StyleSheet.create({
     //justifyContent: "center",
     alignItems: "center",
     padding: 20,
+  },
+
+  dateContainer: {
+    borderWidth: 2,
+    width: 130,
   },
 
   account: {
@@ -223,8 +313,9 @@ const styles = StyleSheet.create({
     marginTop: 100,
     //marginBottom: 12,
   },
+
   input: {
-    height: 35,
+    //height: 35,
 
     zIndex: 2,
 
