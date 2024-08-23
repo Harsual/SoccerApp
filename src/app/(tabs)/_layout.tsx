@@ -6,7 +6,8 @@ import { Colors } from "@/src/constants/Colors";
 import { useColorScheme } from "@/src/hooks/useColorScheme";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  //const colorScheme = useColorScheme();
+  const colorScheme = "light";
 
   return (
     <Tabs
@@ -23,6 +24,7 @@ export default function TabLayout() {
         name="Home"
         options={{
           title: "Home",
+
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "home" : "home-outline"}
