@@ -47,6 +47,11 @@ export default function RootLayout() {
         //options={{ headerShown: false }}
       />
 
+      <Stack.Screen
+        name="screens/FieldScreen"
+        //options={{ headerShown: false }}
+      />
+
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
   );

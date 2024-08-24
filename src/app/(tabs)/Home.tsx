@@ -21,7 +21,9 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { useScrollToTop } from "@react-navigation/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SearchBar } from "react-native-screens";
+import { Colors } from "@/src/constants/Colors";
 import PagerView from "react-native-pager-view";
+import FieldCard from "@/src/components/FieldCard";
 
 //import Compete from "@/src/assets/fields/field.jpg";
 
@@ -38,6 +40,7 @@ const carouselData = [
 
 const fieldsList: any[] = [
   {
+    id: 0,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -46,6 +49,7 @@ const fieldsList: any[] = [
   },
 
   {
+    id: 1,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -54,6 +58,7 @@ const fieldsList: any[] = [
   },
 
   {
+    id: 2,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -62,6 +67,7 @@ const fieldsList: any[] = [
   },
 
   {
+    id: 3,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -70,6 +76,7 @@ const fieldsList: any[] = [
   },
 
   {
+    id: 4,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -77,6 +84,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 5,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -84,6 +92,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 6,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -91,6 +100,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 7,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -98,6 +108,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 8,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -105,6 +116,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 9,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -112,6 +124,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 10,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -119,6 +132,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 11,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -126,6 +140,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 12,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -133,6 +148,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 13,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -140,6 +156,7 @@ const fieldsList: any[] = [
     //image: require("src/assets/fields/field.jpeg"),
   },
   {
+    id: 14,
     name: "Community Center",
     address: "testing123",
     price: "30$/hr",
@@ -346,6 +363,7 @@ export default function Home() {
       <Animated.View
         style={[
           styles.toolbar,
+
           {
             transform: [
               {
@@ -357,7 +375,12 @@ export default function Home() {
           },
         ]}
       >
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            { backgroundColor: Colors["light"].tabIconSelected },
+          ]}
+        >
           <Text style={styles.toolbarText}>SoccerApp</Text>
         </View>
 
@@ -382,7 +405,9 @@ export default function Home() {
                 styles.sportItemContainer,
                 {
                   backgroundColor:
-                    selectedSport === item.id ? "green" : "white",
+                    selectedSport === item.id
+                      ? Colors["light"].tabIconSelected
+                      : "white",
                 },
               ]}
             >
@@ -459,34 +484,22 @@ export default function Home() {
             ))}
           </View>
         </View>
-        {/* <FlatList
-          ref={flatListRef}
-          data={carouselData}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          renderItem={({ item }) => (
-            <View style={styles.adContainer}>
-              {/* <Image source={item.image} style={styles.adImage} /> 
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-        > */}
 
         {fields.map((item, index) => (
-          <View style={styles.containerItem} key={index}>
-            <View style={styles.imageContainer}>
-              <Image
-                source={require("../../assets/fields/field2.jpg")}
-                style={styles.image}
-              />
-            </View>
-            <ThemedText>{item.name}</ThemedText>
-            <View style={styles.description}>
-              <ThemedText type="description">{item.address}</ThemedText>
-              <ThemedText type="subtitle">{item.price}</ThemedText>
-            </View>
-          </View>
+          // <View style={styles.containerItem} key={index}>
+          //   <View style={styles.imageContainer}>
+          //     <Image
+          //       source={require("../../assets/fields/field2.jpg")}
+          //       style={styles.image}
+          //     />
+          //   </View>
+          //   <ThemedText>{item.name}</ThemedText>
+          //   <View style={styles.description}>
+          //     <ThemedText type="description">{item.address}</ThemedText>
+          //     <ThemedText type="subtitle">{item.price}</ThemedText>
+          //   </View>
+          // </View>
+          <FieldCard item={item} index={index} key={index}></FieldCard>
         ))}
       </Animated.ScrollView>
     </ThemedView>
@@ -503,7 +516,7 @@ const styles = StyleSheet.create({
 
   header: {
     height: 75,
-    backgroundColor: "green",
+    //backgroundColor: "green",
     width: "100%",
     alignItems: "center",
     justifyContent: "flex-end",
