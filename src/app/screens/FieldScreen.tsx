@@ -5,6 +5,10 @@ import React, { useRef, useState } from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import PagerView from "react-native-pager-view";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import ServiceIcon from "@/src/components/ServiceIcon";
 
 export default function FieldScreen() {
   const carouselData = [
@@ -13,6 +17,12 @@ export default function FieldScreen() {
     { id: 2, image: require("../../assets/fields/field2.jpg") },
     // Add more images as needed
   ];
+
+  const fieldInfo = {
+    name: "community center",
+    address: "testing123",
+    services: ["parking", "washroom", "water-fountain", "football", "bibs"],
+  };
 
   const pagerRef = useRef<PagerView>(null);
   const [selectedPage, setSelectedPage] = useState(0);
@@ -50,6 +60,45 @@ export default function FieldScreen() {
             />
           ))}
         </View>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 15,
+        }}
+      >
+        <View>
+          <ThemedText>Field Name</ThemedText>
+          <ThemedText>Address</ThemedText>
+        </View>
+        <View>
+          <ThemedText>Get Directions</ThemedText>
+        </View>
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <ServiceIcon
+          text="parking"
+          iconName="parking"
+          iconComponent={FontAwesome5}
+        ></ServiceIcon>
+        {/* <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            borderWidth: 3,
+            paddingHorizontal: 5,
+          }}
+        >
+          <FontAwesome5 name="parking" size={24} color="black" />
+          <ThemedText> parking</ThemedText>
+        </View>
+
+        <FontAwesome5 name="restroom" size={24} color="black" />
+        <MaterialCommunityIcons name="fountain" size={24} color="black" />
+        <FontAwesome6 name="soccer-ball" size={24} color="black" />
+        <MaterialCommunityIcons name="tshirt-v" size={24} color="black" /> */}
       </View>
     </ThemedView>
   );
