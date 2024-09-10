@@ -10,5 +10,6 @@ export const ROUTES = {
     SUCCESS: "screens/SuccessScreen",
     FORGOT: "screens/ForgotPasswordScreen",
     RESET: "screens/ResetPasswordScreen",
-    INTRO:"screens/IntroScreen"
+    INTRO:"screens/IntroScreen",
+    FIELD:"screens/FieldScreen"
   }

@@ -1,9 +1,11 @@
 import { Text, View } from "react-native";
 import { Redirect } from "expo-router";
 // index.ts
+import LogoSplashScreen from "./screens/LogoSplashScreen";
 
 export default function Index() {
-  return <Redirect href={"screens/FieldScreen"}></Redirect>;
+  return <Redirect href={"(tabs)/Home"}></Redirect>;
+  //return <LogoSplashScreen></LogoSplashScreen>;
 }
 {
   /* <View

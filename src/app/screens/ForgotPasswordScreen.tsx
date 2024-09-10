@@ -9,6 +9,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Pressable,
 } from "react-native";
 import Button from "@/src/components/Button";
 import { Link, router } from "expo-router";
@@ -21,6 +22,8 @@ import PasswordInput from "@/src/components/PasswordInput";
 import { ExternalLink } from "@/src/components/ExternalLink";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import BackIcon from "@/src/assets/icons/back.svg";
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState<string | null>(null);
@@ -59,6 +62,15 @@ export default function ForgotPasswordScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <Pressable
+        onPress={() => {
+          router.back();
+        }}
+        style={{ marginTop: 50, alignSelf: "flex-start" }}
+      >
+        <BackIcon></BackIcon>
+      </Pressable>
+
       <Text style={styles.title}>Forgot Password</Text>
 
       <ThemedText type="description" style={styles.description}>

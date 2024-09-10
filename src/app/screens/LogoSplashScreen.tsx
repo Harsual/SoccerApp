@@ -8,11 +8,18 @@ import { ThemedView } from "@/src/components/ThemedView";
 import { ThemedText } from "@/src/components/ThemedText";
 import Logo from "@/src/assets/icons/LogoIcon.svg";
 import { ROUTES } from "../navigationConstants";
+import * as SecureStore from "expo-secure-store";
 
 export default function LogoSplashScreen() {
+  const firstSignIn = SecureStore.getItem("firstSignIn");
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace(ROUTES.ONBOARDING);
+      if (firstSignIn) {
+        router.replace(ROUTES.LOGIN);
+      } else {
+        router.replace(ROUTES.ONBOARDING);
+      }
     }, 2000);
 
     return () => clearTimeout(timer);

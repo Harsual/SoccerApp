@@ -16,7 +16,7 @@ import ParallaxScrollView from "@/src/components/ParallaxScrollView";
 import { ThemedText } from "@/src/components/ThemedText";
 import { ThemedView } from "@/src/components/ThemedView";
 import { SetStateAction, useEffect, useRef, useState } from "react";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { useScrollToTop } from "@react-navigation/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -24,6 +24,11 @@ import { SearchBar } from "react-native-screens";
 import { Colors } from "@/src/constants/Colors";
 import PagerView from "react-native-pager-view";
 import FieldCard from "@/src/components/FieldCard";
+import axios from "axios";
+import { createShimmerPlaceHolder } from "expo-shimmer-placeholder";
+import { LinearGradient } from "expo-linear-gradient";
+import { ROUTES } from "../navigationConstants";
+const ShimmerPlaceHolder = createShimmerPlaceHolder(LinearGradient);
 
 //import Compete from "@/src/assets/fields/field.jpg";
 
@@ -31,139 +36,149 @@ function clamp(num: number, lower: number, upper: number) {
   return Math.min(Math.max(num, lower), upper);
 }
 
-const carouselData = [
-  { id: 0, image: require("../../assets/fields/field2.jpg") },
-  { id: 1, image: require("../../assets/fields/field2.jpg") },
-  { id: 2, image: require("../../assets/fields/field2.jpg") },
-  // Add more images as needed
-];
+interface CarouselItem {
+  id: number;
+  image: string; // The image is a string (URL or path to the image)
+}
 
-const fieldsList: any[] = [
-  {
-    id: 0,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
+interface Field {
+  id: number;
+  name: string;
+  sports: string[];
+}
+// const carouselData = [
+//   { id: 0, image: require("../../assets/fields/field2.jpg") },
+//   { id: 1, image: require("../../assets/fields/field2.jpg") },
+//   { id: 2, image: require("../../assets/fields/field2.jpg") },
+//   // Add more images as needed
+// ];
 
-  {
-    id: 1,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
+// const fieldsList: any[] = [
+//   {
+//     id: 0,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
 
-  {
-    id: 2,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
+//   {
+//     id: 1,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
 
-  {
-    id: 3,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
+//   {
+//     id: 2,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
 
-  {
-    id: 4,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["volleyball"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 5,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: [" basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 6,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 7,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 8,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 9,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 10,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 11,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["table tennis"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 12,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 13,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-  {
-    id: 14,
-    name: "Community Center",
-    address: "testing123",
-    price: "30$/hr",
-    sports: ["soccer", "volleyball", "basketball", "badminton"],
-    //image: require("src/assets/fields/field.jpeg"),
-  },
-];
+//   {
+//     id: 3,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+
+//   {
+//     id: 4,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["volleyball"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 5,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: [" basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 6,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 7,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 8,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 9,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 10,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 11,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["table tennis"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 12,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 13,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+//   {
+//     id: 14,
+//     name: "Community Center",
+//     address: "testing123",
+//     price: "30$/hr",
+//     sports: ["soccer", "volleyball", "basketball", "badminton"],
+//     //image: require("src/assets/fields/field.jpeg"),
+//   },
+// ];
 
 const sports: any[] = [
   {
@@ -203,10 +218,15 @@ export default function Home() {
   const [overrideAnimation, setOverrideAnimation] = useState(false);
   const [selectedSport, setSelectedSport] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [fields, setFields] = useState(fieldsList);
+  //const [fields, setFields] = useState([]);
+  const [filteredFields, setFilteredFields] = useState<Field[]>([]);
+  const fields = useRef<Field[]>([]);
+
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedPage, setSelectedPage] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [carouselData, setCarouselData] = useState<CarouselItem[]>([]);
   const pagerRef = useRef<PagerView>(null);
 
   const animatedValue = useRef(new Animated.Value(0)).current;
@@ -285,6 +305,36 @@ export default function Home() {
     }
   }, [currentIndex]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/data/getData");
+        //console.log(response.data);
+
+        setCarouselData(response.data.ads);
+        fields.current = response.data.fields;
+
+        //setFields(response.data.fields);
+        const selectedSportName = sports.find((sport) => sport.id === 0)?.sport;
+
+        //console.log(selectedSportName);
+        const filtered_Fields = (fields.current as Field[]).filter((field) =>
+          field.sports.some(
+            (sport: string) =>
+              sport.trim().toLowerCase() === selectedSportName.toLowerCase()
+          )
+        );
+
+        setFilteredFields(filtered_Fields);
+        setIsLoaded(true);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleScrollEndDrag = (event: any) => {
     console.log("ScrollEndDrag");
 
@@ -325,6 +375,14 @@ export default function Home() {
     }
   };
 
+  const handleCardPress = (cardID: any) => {
+    console.log(cardID);
+    router.push({
+      pathname: ROUTES.FIELD,
+      params: { cardID: cardID },
+    });
+  };
+
   const handleSportClick = (item: any) => {
     //console.log()
     //const filteredFields = fields.filter(field => field.sports.includes(selectedSport))
@@ -339,14 +397,14 @@ export default function Home() {
     )?.sport;
 
     console.log(selectedSportName);
-    const filteredFields = fieldsList.filter((field) =>
+    const filtered_Fields = (fields.current as Field[]).filter((field) =>
       field.sports.some(
         (sport: string) =>
           sport.trim().toLowerCase() === selectedSportName.toLowerCase()
       )
     );
 
-    setFields(filteredFields);
+    setFilteredFields(filtered_Fields);
   };
 
   const handlePageSelected = (event: any) => {
@@ -397,37 +455,45 @@ export default function Home() {
           //style={styles.sportsView}
           contentContainerStyle={styles.sportsView}
         >
-          {sports.map((item, index) => (
-            <Pressable
-              onPress={() => handleSportClick(item)}
-              key={index}
-              style={[
-                styles.sportItemContainer,
-                {
-                  backgroundColor:
-                    selectedSport === item.id
-                      ? Colors["light"].tabIconSelected
-                      : "white",
-                },
-              ]}
-            >
-              <MaterialIcons
-                name={item.svg}
-                size={35}
-                color={selectedSport === item.id ? "white" : "black"}
-              />
-              <Text
-                style={{
-                  color: selectedSport === item.id ? "white" : "black",
-                  fontSize: 12,
-                }}
-                numberOfLines={1}
-                adjustsFontSizeToFit={true}
+          {sports.map((item, index) =>
+            !isLoaded ? (
+              <ShimmerPlaceHolder
+                visible={false}
+                style={styles.sportItemContainer}
+                key={index}
+              ></ShimmerPlaceHolder>
+            ) : (
+              <Pressable
+                onPress={() => handleSportClick(item)}
+                key={index}
+                style={[
+                  styles.sportItemContainer,
+                  {
+                    backgroundColor:
+                      selectedSport === item.id
+                        ? Colors["light"].tabIconSelected
+                        : "white",
+                  },
+                ]}
               >
-                {item.sport}
-              </Text>
-            </Pressable>
-          ))}
+                <MaterialIcons
+                  name={item.svg}
+                  size={35}
+                  color={selectedSport === item.id ? "white" : "black"}
+                />
+                <Text
+                  style={{
+                    color: selectedSport === item.id ? "white" : "black",
+                    fontSize: 12,
+                  }}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
+                >
+                  {item.sport}
+                </Text>
+              </Pressable>
+            )
+          )}
         </ScrollView>
       </Animated.View>
       <Animated.ScrollView
@@ -454,18 +520,13 @@ export default function Home() {
             ref={pagerRef}
             onPageSelected={handlePageSelected}
           >
-            {/* <View key="1" style={styles.page}>
-              <Text>Page 1</Text>
-            </View>
-            <View key="2" style={styles.page}>
-              <Text>Page 2</Text>
-            </View>
-            <View key="3" style={styles.page}>
-              <Text>Page 3</Text>
-            </View> */}
             {carouselData.map((item, index) => (
               <View key={index} style={styles.page}>
-                <Image source={item.image} style={styles.image} />
+                {/* <Image source={{ uri: item.image }} style={styles.image} /> */}
+                <Image
+                  source={require("@/src/assets/fields/Frame_1.jpg")}
+                  style={styles.image}
+                />
               </View>
             ))}
           </PagerView>
@@ -484,22 +545,14 @@ export default function Home() {
             ))}
           </View>
         </View>
-
-        {fields.map((item, index) => (
-          // <View style={styles.containerItem} key={index}>
-          //   <View style={styles.imageContainer}>
-          //     <Image
-          //       source={require("../../assets/fields/field2.jpg")}
-          //       style={styles.image}
-          //     />
-          //   </View>
-          //   <ThemedText>{item.name}</ThemedText>
-          //   <View style={styles.description}>
-          //     <ThemedText type="description">{item.address}</ThemedText>
-          //     <ThemedText type="subtitle">{item.price}</ThemedText>
-          //   </View>
-          // </View>
-          <FieldCard item={item} index={index} key={index}></FieldCard>
+        <Text>{filteredFields.length}</Text>
+        {filteredFields.map((item, index) => (
+          <FieldCard
+            item={item}
+            index={index}
+            key={index}
+            handleCardPress={handleCardPress}
+          ></FieldCard>
         ))}
       </Animated.ScrollView>
     </ThemedView>
@@ -536,7 +589,7 @@ const styles = StyleSheet.create({
   },
 
   contentContainer: {
-    //paddingBottom: 150,
+    paddingBottom: 160,
   },
   toolbar: {
     position: "absolute",

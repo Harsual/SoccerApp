@@ -19,6 +19,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import CreateProfileScreen from "../screens/CreateProfileScreen";
+import Button from "@/src/components/Button";
+import * as SecureStore from "expo-secure-store";
 
 const settingsList: any[] = [
   {
@@ -33,6 +35,15 @@ export default function SettingsScreen() {
     //console.log("hello");
     router.push(item.href);
   };
+
+  async function resetExpoStore() {
+    try {
+      await SecureStore.deleteItemAsync("firstSignIn");
+      console.log(`Value for key has been reset.`);
+    } catch (error) {
+      console.error(`Error resetting value for key :`, error);
+    }
+  }
 
   return (
     <ScrollView style={styles.listContainer}>
@@ -52,26 +63,7 @@ export default function SettingsScreen() {
         </Pressable>
       ))}
 
-      {/* <FlatList
-        data={settingsList}
-        keyExtractor={(item, index) => index.toString()}
-        style={styles.listContainer}
-        renderItem={({ item, index }) => (
-          <Pressable
-            onPress={() => handleSettingsPress()}
-            style={styles.listItemContainer}
-          >
-            <FontAwesome
-              name={item.icon}
-              size={12}
-              //color={"#345351"}
-              style={{ opacity: 1 }}
-            ></FontAwesome>
-
-            <Text>{item}</Text>
-          </Pressable>
-        )}
-      ></FlatList> */}
+      <Button title={"reset SecureStore"} onPress={resetExpoStore}></Button>
     </ScrollView>
   );
 }

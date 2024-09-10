@@ -4,13 +4,18 @@ import { ThemedText } from "./ThemedText";
 interface FieldCardProps {
   item: any;
   index: number;
+  handleCardPress: (id: number) => void;
 }
 
-const handleCardPress = (cardID: any) => {
-  console.log(cardID);
-};
+// const handleCardPress = (cardID: any) => {
+//   console.log(cardID);
+// };
 
-export default function FieldCard({ item, index }: FieldCardProps) {
+export default function FieldCard({
+  item,
+  index,
+  handleCardPress,
+}: FieldCardProps) {
   return (
     // <View style={styles.containerItem}>
     <Pressable
@@ -37,7 +42,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     //borderWidth: 2,
     //margin: 10,
-    height: 145,
+    height: 190,
   },
   image: {
     width: "100%",
@@ -53,13 +58,13 @@ const styles = StyleSheet.create({
   containerItem: {
     //borderWidth: 3,
     //height: 200,
-    marginHorizontal: 20,
-    marginVertical: 7,
-    backgroundColor: "white",
+    marginHorizontal: 10,
+    marginVertical: 15,
+    //backgroundColor: "white",
     borderRadius: 15,
     borderColor: "#F0F0F0",
 
-    borderWidth: 1,
-    padding: 8,
+    //borderWidth: 1,
+    //padding: 8,
   },
 });

@@ -22,8 +22,8 @@ export default function ServiceIcon({
       style={{
         flexDirection: "row",
         alignItems: "center",
-        borderWidth: 3,
-        paddingHorizontal: 5,
+        //borderWidth: 3,
+        paddingHorizontal: 7,
       }}
     >
       <IconComponent name={iconName} />

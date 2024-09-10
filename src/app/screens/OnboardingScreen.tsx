@@ -6,9 +6,13 @@ import { Link, router } from "expo-router";
 import { Colors } from "@/src/constants/Colors";
 import { ThemedView } from "@/src/components/ThemedView";
 import { ThemedText } from "@/src/components/ThemedText";
-import SplashIcon1 from "@/src/assets/icons/GamePlaying.svg";
-import SplashIcon2 from "@/src/assets/icons/Compete.svg";
-import SplashIcon3 from "@/src/assets/icons/Win.svg";
+//import SplashIcon1 from "@/src/assets/icons/GamePlaying.svg";
+import SplashIcon1 from "@/src/assets/icons/undraw_mobile_app_re_catg-2.svg";
+//import SplashIcon1 from "@/src/assets/icons/Find_venue.svg";
+import SplashIcon2 from "@/src/assets/icons/undraw_booking_re_gw4j.svg";
+//import SplashIcon2 from "@/src/assets/icons/Compete.svg";
+import SplashIcon3 from "@/src/assets/icons/undraw_goal_-0-v5v.svg";
+//import SplashIcon3 from "@/src/assets/icons/Win.svg";
 import { ROUTES } from "../navigationConstants";
 import AppIntroSlider from "react-native-app-intro-slider";
 import AppIntroSliderProps from "react-native-app-intro-slider";
@@ -64,22 +68,25 @@ export default function OnboardingScreen() {
   const slides = [
     {
       id: 1,
-      title: "Play Tournaments",
-      description: "shwdawi hoawidhwaoi awodihawoi",
+      title: "Discover the Perfect Court",
+      description:
+        "Explore a curated selection of fields and courts for various sports to easily find your ideal venue",
       //image: "Compete",
       image_index: 0,
     },
     {
       id: 2,
-      title: "Discover Best Places",
-      description: "slkj paowidja apwodijap",
+      title: "Effortless Booking",
+      description:
+        "Seamlessly book your preferred field through the app with efficiency and convenience",
       //image: "GamePlaying",
       image_index: 1,
     },
     {
       id: 3,
-      title: "Discover Best Places",
-      description: "s",
+      title: "Enjoy the Match!",
+      description:
+        "Attend your scheduled match and experience the thrill of your favorite sports",
       //image: "Win",
       image_index: 2,
     },
@@ -126,17 +133,19 @@ export default function OnboardingScreen() {
           bottomButton
           activeDotStyle={{
             backgroundColor: Colors[colorScheme ?? "light"].tint,
-            marginBottom: 300,
+            marginBottom: 200,
           }}
           dotStyle={{
             backgroundColor: Colors[colorScheme ?? "light"].tabIconDefault,
-            marginBottom: 300,
+            marginBottom: 200,
           }}
           renderItem={({ item }) => {
             const IconComponent = splashIcons[item.image_index];
             return (
               <ThemedView style={styles.container}>
-                <IconComponent />
+                <ThemedView style={styles.vectorIllustration}>
+                  <IconComponent width={350} height={300} />
+                </ThemedView>
 
                 {/* <SplashIcon1
                 style={styles.logoIcon}
@@ -172,9 +181,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
+    //justifyContent: "center",
     alignItems: "center",
     //padding: 16,
+  },
+
+  vectorIllustration: {
+    //marginBottom: 50,
+    //borderWidth: 2,
+    marginTop: 140,
   },
 
   logoWrapper: {
@@ -192,20 +207,24 @@ const styles = StyleSheet.create({
     textAlign: "center",
     //fontFamily: "Poppins",
     //lineHeight: 'normal',
-    marginBottom: 20,
-    //fontSize: 40,
+    marginTop: 50,
+    fontSize: 20,
     //fontStyle: 'normal',
     //fontWeight: 600,
     //lineHeight: 'normal',
   },
 
   description: {
-    marginBottom: 130,
+    //marginBottom: 100,
+    marginTop: 15,
+    width: "80%",
+    //alignItems: "center",
+    textAlign: "center",
   },
 
   skipContainer: {
     position: "absolute",
-    top: 50, // Positioning for the Skip button
+    top: 70, // Positioning for the Skip button
     right: 20,
     zIndex: 10,
   },
@@ -214,6 +233,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     color: "black",
+    //width: "80%",
     fontSize: 16,
   },
 });

@@ -22,10 +22,28 @@ export default function LoginScreen() {
   const [password, setPassword] = useState<string | undefined>();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const FIRST_SIGN_IN_KEY = "firstSignIn";
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev);
   };
+
+  async function handleFirstSignIn() {
+    try {
+      // Check if the key already exists
+      const firstSignIn = await SecureStore.getItemAsync(FIRST_SIGN_IN_KEY);
+
+      if (!firstSignIn) {
+        // If the key does not exist, this is the first sign-in
+        await SecureStore.setItemAsync(FIRST_SIGN_IN_KEY, "true");
+        console.log("User signed in for the first time on this device.");
+      } else {
+        console.log("User has already signed in before on this device.");
+      }
+    } catch (error) {
+      console.error("Error handling first sign-in:", error);
+    }
+  }
 
   async function storeToken(token: string) {
     try {
@@ -72,6 +90,7 @@ export default function LoginScreen() {
 
       const { token, message } = response.data;
       storeToken(token);
+      await handleFirstSignIn();
       // Store the JWT securely
       //await SecureStore.setItemAsync("jwt", token);
       console.log(message);
