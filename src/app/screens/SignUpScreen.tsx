@@ -21,6 +21,9 @@ import PasswordInput from "@/src/components/PasswordInput";
 import { ExternalLink } from "@/src/components/ExternalLink";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import Constants from "expo-constants";
+
+const HOST = Constants.expoConfig?.extra?.HOST;
 
 export default function SignUpScreen() {
   //const [phone, setPhone] = React.useState("");
@@ -46,7 +49,7 @@ export default function SignUpScreen() {
       setErrorMessage("");
       try {
         // Send sign-up request
-        const response = await axios.post("http://localhost:4000/signup", {
+        const response = await axios.post(`http://${HOST}:4000/signup`, {
           numberInfo: numberInfo,
           email: email,
           password: password,

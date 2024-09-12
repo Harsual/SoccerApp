@@ -10,9 +10,11 @@ import {
   ScrollView,
   Pressable,
   Text,
+  Platform,
+  Linking,
 } from "react-native";
 
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import PagerView from "react-native-pager-view";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -24,10 +26,26 @@ import { Colors } from "@/src/constants/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Button from "@/src/components/Button";
 import axios from "axios";
+import { findFieldByID, Field } from "../fieldsStore";
+import Constants from "expo-constants";
+//import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function FieldScreen() {
+  const params = useLocalSearchParams();
+  const id = parseInt(params.cardID as string, 10);
+  const field = findFieldByID(id);
+  console.log(field);
+
   const handleSportClick = (item: any) => {
     setSelectedSport(item);
+  };
+
+  const openFacilityMap = () => {
+    const url = "https://maps.app.goo.gl/5KFy1nzY9eRXmLpa7"; // Specific Google Maps link
+
+    Linking.openURL(url).catch((err) =>
+      console.error("Error opening Google Maps", err)
+    );
   };
 
   const servicesData = [
@@ -72,63 +90,21 @@ export default function FieldScreen() {
     },
   ];
 
-  //   const sports: any[] = [
-  //     {
-  //       id: 0,
-  //       sport: "soccer",
-  //       svg: "sports-soccer",
-  //     },
-  //     {
-  //       id: 1,
-  //       sport: "volleyball",
-  //       svg: "sports-volleyball",
-  //     },
-  //     {
-  //       id: 2,
-  //       sport: "basketball",
-  //       svg: "sports-basketball",
-  //     },
-  //     {
-  //       id: 3,
-  //       sport: "badminton",
-  //       svg: "sports-tennis",
-  //     },
-  //     {
-  //       id: 4,
-  //       sport: "table tennis",
-  //       svg: "sports-soccer",
-  //     },
-  //   ];
-
-  //const pitches: string[] = [" 5 v 5", "7 v 7", "9 v 9", "10 v 10"];
-
-  const fieldInfo = {
-    id: 1,
-    name: "community center",
-    address: "testing123",
-    services: ["parking", "washroom", "water-fountain", "football", "bibs"],
-    // sports: ["soccer", "volleyball", "table tennis"],
-    // pitches: [" field 4", "field 3", "field 2", "field 1", ""],
-    sportPitches: {
-      soccer: ["field 1", "field 2", "field 3", "field 4"],
-      volleyball: ["field 1", "field 3"], // assuming volleyball can only be played on certain fields
-      tabletennis: ["field 2", "field 4"], //
-    },
-
-    //   sportPitches:[
-    //     {sport: "soccer", fields: ["field 1", "field 2", "field 3", "field 4"]},
-    //     {sport: "soccer", fields: ["field 1", "field 2", "field 3", "field 4"]},
-    // ]
-  };
-
-  // Function to normalize the sport name for comparison
-  // function normalizeSportName(sportName: string) {
-  //   return sportName.replace(/\s+/g, "").toLowerCase();
-  // }
+  // const fieldInfo = {
+  //   id: 1,
+  //   name: "community center",
+  //   address: "testing123",
+  //   services: ["parking", "washroom", "water-fountain", "football", "bibs"],
+  //   sportPitches: {
+  //     soccer: ["field 1", "field 2", "field 3", "field 4"],
+  //     volleyball: ["field 1", "field 3"], // assuming volleyball can only be played on certain fields
+  //     tabletennis: ["field 2", "field 4"], //
+  //   },
+  // };
 
   // Filter the sports array
   const availableSports = sports.filter((sport) =>
-    Object.keys(fieldInfo.sportPitches).includes(
+    Object.keys(field?.sportPitches || []).includes(
       sport.sport.toLowerCase().replace(/\s+/g, "")
     )
   );
@@ -143,6 +119,26 @@ export default function FieldScreen() {
   const [showBookButton, setShowBookButton] = useState(false);
   const [bookDate, setBookDate] = useState<Date>(new Date());
   const [timesAvail, setTimesAvail] = useState<undefined | string[]>([]);
+  const HOST = Constants.expoConfig?.extra?.HOST;
+  const onChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
+      if (event.type === "dismissed") {
+        // Handle the cancel event
+        //setShowPicker(false);
+        return;
+      }
+
+      if (event.type === "set") {
+        setBookDate(selectedDate ?? bookDate);
+        //setShowPicker(false); // Close the modal after date is picked
+      }
+    }
+
+    //const currentDate = selectedDate || birthdate;
+    //setShowPicker(Platform.OS === "ios");
+    setBookDate(selectedDate ?? bookDate);
+    //setShowPicker(false);
+  };
 
   useEffect(() => {
     if (selectedTime) {
@@ -164,10 +160,10 @@ export default function FieldScreen() {
       if (selectedSport && selectedPitch !== undefined && bookDate) {
         try {
           const response = await axios.get(
-            "http://localhost:4000/times/getAvailTimes",
+            `http://${HOST}:4000/times/getAvailTimes`,
             {
               params: {
-                facilityID: fieldInfo.id,
+                facilityID: field?.id,
                 //sport: selectedSport,
                 pitch: selectedPitch,
                 date: bookDate.toISOString().split("T")[0], // Send the date in ISO format
@@ -189,232 +185,242 @@ export default function FieldScreen() {
   }, [selectedSport, selectedPitch, bookDate]);
 
   //const sportName: string = selectedSport.sport;
-  type SportPitchesKeys = keyof typeof fieldInfo.sportPitches;
+  // type SportPitchesKeys = keyof typeof field?.sportPitches;
+  // const selectedSportKey = selectedSport.sport
+  //   .toLowerCase()
+  //   .replace(/\s+/g, "") as SportPitchesKeys;
+
+  //type SportPitchesKeys = keyof typeof field?.sportPitches;
   const selectedSportKey = selectedSport.sport
     .toLowerCase()
-    .replace(/\s+/g, "") as SportPitchesKeys;
+    .replace(/\s+/g, "");
   //const fields = fieldInfo.sportPitches[sportName] || [];
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <View style={styles.adContainer}>
-        <PagerView
-          style={styles.pagerView}
-          initialPage={0}
-          ref={pagerRef}
-          onPageSelected={handlePageSelected}
-        >
-          {carouselData.map((item, index) => (
-            <View key={index} style={styles.page}>
-              <Image source={item.image} style={styles.image} />
-            </View>
-          ))}
-        </PagerView>
-        <View style={styles.dotsContainer}>
-          {[...Array(3)].map((_, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.dot,
-                selectedPage === index
-                  ? styles.selectedDot
-                  : styles.unselectedDot,
-              ]}
-              onPress={() => pagerRef.current?.setPage(index)}
-            />
-          ))}
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingHorizontal: 15,
-        }}
+    // <ThemedView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
+      {/* <View
+        style={[
+          styles.header,
+          { backgroundColor: Colors["light"].tabIconSelected },
+        ]}
       >
-        <View>
-          <ThemedText>Field Name</ThemedText>
-          <ThemedText>Address</ThemedText>
-        </View>
-        <View>
-          <ThemedText>Get Directions</ThemedText>
-        </View>
-      </View>
-      <ThemedText>Services</ThemedText>
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          backgroundColor: "white",
-          paddingHorizontal: 15,
-          paddingVertical: 10,
-        }}
-      >
-        {/* {carouselData.map((item, index) => (
-          <View key={index} style={styles.page}>
-            <Image source={item.image} style={styles.image} />
+        
+      </View> */}
+      <ScrollView style={{ backgroundColor: Colors["light"].background }}>
+        <View style={styles.adContainer}>
+          <PagerView
+            style={styles.pagerView}
+            initialPage={0}
+            ref={pagerRef}
+            onPageSelected={handlePageSelected}
+          >
+            {carouselData.map((item, index) => (
+              <View key={index} style={styles.page}>
+                <Image source={item.image} style={styles.image} />
+              </View>
+            ))}
+          </PagerView>
+          <View style={styles.dotsContainer}>
+            {[...Array(3)].map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.dot,
+                  selectedPage === index
+                    ? styles.selectedDot
+                    : styles.unselectedDot,
+                ]}
+                onPress={() => pagerRef.current?.setPage(index)}
+              />
+            ))}
           </View>
-        ))} */}
-        {fieldInfo.services.map((item, index) => {
-          const service = servicesData.find(
-            (serviceData) => serviceData.name === item
-          );
-          return (
-            <ServiceIcon
-              text={service?.name || item}
-              iconName={service?.iconName || item}
-              key={index}
-              iconComponent={service?.iconClass}
-            ></ServiceIcon>
-          );
-        })}
-      </View>
-      <ThemedText>Available Activities</ThemedText>
-      <SportsView
-        sports={availableSports}
-        onSportPress={handleSportClick}
-        selectedSport={selectedSport.id}
-        setSelectedSport={setSelectedSport}
-      ></SportsView>
-
-      <ThemedText>Select Pitch</ThemedText>
-      <View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          //style={styles.sportsView}
-        >
-          {/* {pitches.map((item, index) => (
-            <Pressable
-              onPress={() => setSelectedPitch(index)}
-              key={index}
-              style={[
-                styles.sportItemContainer,
-                {
-                  backgroundColor:
-                    selectedPitch === index
-                      ? Colors["light"].tabIconSelected
-                      : "white",
-                },
-              ]}
-            >
-              <Text
-                style={{
-                  color: selectedPitch === index ? "white" : "black",
-                  fontSize: 12,
-                }}
-                numberOfLines={1}
-                adjustsFontSizeToFit={true}
-              >
-                {item}
-              </Text>
-            </Pressable>
-          ))} */}
-
-          {fieldInfo.sportPitches[selectedSportKey]?.map((item, index) => (
-            <Pressable
-              onPress={() => setSelectedPitch(index)}
-              key={index}
-              style={[
-                styles.sportItemContainer,
-                {
-                  backgroundColor:
-                    selectedPitch === index
-                      ? Colors["light"].tabIconSelected
-                      : "white",
-                },
-              ]}
-            >
-              <Text
-                style={{
-                  color: selectedPitch === index ? "white" : "black",
-                  fontSize: 12,
-                }}
-                numberOfLines={1}
-                adjustsFontSizeToFit={true}
-              >
-                {item}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
-      <ThemedText>Select Date</ThemedText>
-      <DateTimePicker
-        value={bookDate}
-        mode="date"
-        //is24Hour={true}
-        display="default"
-        onChange={() => setBookDate}
-        style={{
-          //position: "absolute",
-          backgroundColor: "white",
-          borderColor: "#F0F0F0",
-
-          //borderBottomWidth: 2,
-
-          alignSelf: "flex-start",
-          //position: "absolute",
-          //width: "auto",
-          borderWidth: 3,
-        }}
-        //onTouchCancel={() => setShowPicker(false)}
-      />
-
-      <ThemedText>Available times</ThemedText>
-      <View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          //style={styles.sportsView}
-        >
-          {timesAvail?.map((item, index) => (
-            <Pressable
-              onPress={() => setSelectedTime(index)}
-              key={index}
-              style={[
-                styles.sportItemContainer,
-                {
-                  backgroundColor:
-                    selectedTime === index
-                      ? Colors["light"].tabIconSelected
-                      : "white",
-                },
-              ]}
-            >
-              <Text
-                style={{
-                  color: selectedTime === index ? "white" : "black",
-                  fontSize: 12,
-                }}
-                numberOfLines={1}
-                adjustsFontSizeToFit={true}
-              >
-                {item}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
-      {showBookButton && (
+        </View>
         <View
           style={{
-            position: "absolute",
-            bottom: 0,
-            backgroundColor: "white",
-            width: "100%",
             flexDirection: "row",
-            justifyContent: "space-between",
             alignItems: "center",
-            paddingBottom: 30,
-            paddingHorizontal: 10,
+            justifyContent: "space-between",
+            paddingHorizontal: 15,
           }}
         >
-          <ThemedText style={{ fontSize: 25 }}>55$</ThemedText>
-          <Button title={"Book Now"} onPress={handleBookingPress}></Button>
+          <View>
+            <ThemedText>{field?.name}</ThemedText>
+            <ThemedText>{field?.address}</ThemedText>
+          </View>
+          <Pressable
+            style={[
+              styles.directions,
+              {
+                borderColor: Colors["light"].tabIconSelected,
+                borderRadius: 15,
+                borderWidth: 2,
+              },
+            ]}
+            onPress={openFacilityMap}
+          >
+            <FontAwesome5
+              name="directions"
+              size={24}
+              color={Colors["light"].tabIconSelected}
+            />
+
+            <ThemedText
+              type="default"
+              style={{ color: Colors["light"].tabIconSelected }}
+            >
+              {" "}
+              Get Directions
+            </ThemedText>
+          </Pressable>
         </View>
-      )}
-    </ThemedView>
+        <ThemedText style={styles.subtitle}>Services</ThemedText>
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            backgroundColor: "white",
+            paddingHorizontal: 15,
+            paddingVertical: 10,
+          }}
+        >
+          {field?.services.map((item, index) => {
+            const service = servicesData.find(
+              (serviceData) => serviceData.name === item
+            );
+            return (
+              <ServiceIcon
+                text={service?.name || item}
+                iconName={service?.iconName || item}
+                key={index}
+                iconComponent={service?.iconClass}
+              ></ServiceIcon>
+            );
+          })}
+        </View>
+        <ThemedText style={styles.subtitle}>Available Activities</ThemedText>
+        <SportsView
+          sports={availableSports}
+          onSportPress={handleSportClick}
+          selectedSport={selectedSport.id}
+          setSelectedSport={setSelectedSport}
+        ></SportsView>
+
+        <ThemedText style={styles.subtitle}>Select Pitch</ThemedText>
+        <View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            //style={styles.sportsView}
+          >
+            {field?.sportPitches[selectedSportKey]?.map(
+              (item: any, index: any) => (
+                <Pressable
+                  onPress={() => setSelectedPitch(index)}
+                  key={index}
+                  style={[
+                    styles.sportItemContainer,
+                    {
+                      backgroundColor:
+                        selectedPitch === index
+                          ? Colors["light"].tabIconSelected
+                          : "white",
+                    },
+                  ]}
+                >
+                  <Text
+                    style={{
+                      color: selectedPitch === index ? "white" : "black",
+                      fontSize: 12,
+                    }}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                  >
+                    {item}
+                  </Text>
+                </Pressable>
+              )
+            )}
+          </ScrollView>
+        </View>
+        <ThemedText style={styles.subtitle}>Select Date</ThemedText>
+        <DateTimePicker
+          value={bookDate}
+          mode="date"
+          //is24Hour={true}
+          display="default"
+          //onChange={() => setBookDate}
+          onChange={onChange}
+          style={{
+            //position: "absolute",
+            backgroundColor: "white",
+            borderColor: "#F0F0F0",
+
+            //borderBottomWidth: 2,
+
+            alignSelf: "flex-start",
+            //position: "absolute",
+            //width: "auto",
+            borderWidth: 3,
+          }}
+          //onTouchCancel={() => setShowPicker(false)}
+        />
+
+        <ThemedText style={styles.subtitle}>Available times</ThemedText>
+        <View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            //style={styles.sportsView}
+          >
+            {timesAvail?.map((item, index) => (
+              <Pressable
+                onPress={() => setSelectedTime(index)}
+                key={index}
+                style={[
+                  styles.sportItemContainer,
+                  {
+                    backgroundColor:
+                      selectedTime === index
+                        ? Colors["light"].tabIconSelected
+                        : "white",
+                  },
+                ]}
+              >
+                <Text
+                  style={{
+                    color: selectedTime === index ? "white" : "black",
+                    fontSize: 12,
+                  }}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit={true}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+        {showBookButton && (
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              backgroundColor: "white",
+              width: "100%",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingBottom: 30,
+              paddingHorizontal: 10,
+            }}
+          >
+            <ThemedText style={{ fontSize: 25 }}>55$</ThemedText>
+            <Button title={"Book Now"} onPress={handleBookingPress}></Button>
+          </View>
+        )}
+        {/* </ThemedView> */}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -429,6 +435,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  header: {
+    height: 75,
+
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    //borderRadius: 15,
+  },
   dotsContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -442,11 +456,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   selectedDot: {
-    backgroundColor: "blue",
+    backgroundColor: Colors.light.tabIconSelected,
+    borderWidth: 1,
     width: 18,
   },
   unselectedDot: {
-    backgroundColor: "gray",
+    //backgroundColor: "gray",
+    backgroundColor: Colors["light"].tabIconDefault,
+  },
+
+  subtitle: {
+    marginLeft: 10,
+    //marginVertical: 8,
+    marginTop: 15,
   },
   adImage: {
     //width: 300,
@@ -457,6 +479,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     //borderRadius: 20,
+  },
+
+  directions: {
+    flexDirection: "row",
+    borderWidth: 1,
+    padding: 7,
   },
 
   sportItemContainer: {

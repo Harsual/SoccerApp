@@ -16,6 +16,9 @@ import { ROUTES } from "../navigationConstants";
 import PasswordInput from "@/src/components/PasswordInput";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import Constants from "expo-constants";
+
+const HOST = Constants.expoConfig?.extra?.HOST;
 
 export default function LoginScreen() {
   const [email, setEmail] = useState<string | undefined>();
@@ -83,7 +86,7 @@ export default function LoginScreen() {
     setErrorMessage("");
     try {
       // Send login request
-      const response = await axios.post("http://localhost:4000/login", {
+      const response = await axios.post(`http://${HOST}:4000/login`, {
         email: email,
         password: password,
       });

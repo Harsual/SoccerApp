@@ -21,6 +21,9 @@ import PasswordInput from "@/src/components/PasswordInput";
 import { ExternalLink } from "@/src/components/ExternalLink";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import Constants from "expo-constants";
+
+const HOST = Constants.expoConfig?.extra?.HOST;
 
 export default function ResetPasswordScreen() {
   const [code, setCode] = useState<string | undefined>();
@@ -38,14 +41,11 @@ export default function ResetPasswordScreen() {
       setErrorMessage("");
       try {
         // Send sign-up request
-        const response = await axios.post(
-          "http://localhost:4000/passwordReset",
-          {
-            email: email,
-            newPassword: newPassword,
-            code: code,
-          }
-        );
+        const response = await axios.post(`http://${HOST}:4000/passwordReset`, {
+          email: email,
+          newPassword: newPassword,
+          code: code,
+        });
 
         const { message } = response.data;
         // Store the JWT securely

@@ -50,6 +50,17 @@ export default function RootLayout() {
       <Stack.Screen
         name="screens/FieldScreen"
         //options={{ headerShown: false }}
+        options={{
+          headerStyle: {
+            backgroundColor: Colors.light.tabIconSelected,
+            //color: "red",
+          },
+          //contentStyle:{col}
+          headerTintColor: "white",
+          headerBackTitleVisible: false,
+          headerBackTitle: "home",
+          headerTitle: "",
+        }}
       />
 
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

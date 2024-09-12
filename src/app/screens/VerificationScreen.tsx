@@ -12,6 +12,9 @@ import { ROUTES } from "../navigationConstants";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import VerifyInput from "@/src/components/VerifyInput";
+import Constants from "expo-constants";
+
+const HOST = Constants.expoConfig?.extra?.HOST;
 
 export default function VerificationScreen() {
   //const [phone, setPhone] = React.useState("");
@@ -48,7 +51,7 @@ export default function VerificationScreen() {
       console.log("handleVerify");
       try {
         // Send sign-up request
-        const response = await axios.post("http://localhost:4000/verify", {
+        const response = await axios.post(`http://${HOST}:4000/verify`, {
           code: code,
           email: email,
         });
@@ -93,7 +96,7 @@ export default function VerificationScreen() {
       // Send resend request
       setTimeLeft(30);
       setShowResetLink(false);
-      const response = await axios.post("http://localhost:4000/resend", {
+      const response = await axios.post(`http://${HOST}:4000/resend`, {
         email: email,
       });
 

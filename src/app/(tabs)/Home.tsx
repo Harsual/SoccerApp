@@ -28,6 +28,11 @@ import axios from "axios";
 import { createShimmerPlaceHolder } from "expo-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 import { ROUTES } from "../navigationConstants";
+import { setFields, Field, getFields } from "@/src/app/fieldsStore";
+import Constants from "expo-constants";
+
+const HOST = Constants.expoConfig?.extra?.HOST;
+//const Host = "localhost";
 const ShimmerPlaceHolder = createShimmerPlaceHolder(LinearGradient);
 
 //import Compete from "@/src/assets/fields/field.jpg";
@@ -41,144 +46,12 @@ interface CarouselItem {
   image: string; // The image is a string (URL or path to the image)
 }
 
-interface Field {
-  id: number;
-  name: string;
-  sports: string[];
-}
-// const carouselData = [
-//   { id: 0, image: require("../../assets/fields/field2.jpg") },
-//   { id: 1, image: require("../../assets/fields/field2.jpg") },
-//   { id: 2, image: require("../../assets/fields/field2.jpg") },
-//   // Add more images as needed
-// ];
-
-// const fieldsList: any[] = [
-//   {
-//     id: 0,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-
-//   {
-//     id: 1,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-
-//   {
-//     id: 2,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-
-//   {
-//     id: 3,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-
-//   {
-//     id: 4,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["volleyball"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 5,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: [" basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 6,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 7,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 8,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 9,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 10,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 11,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["table tennis"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 12,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 13,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-//   {
-//     id: 14,
-//     name: "Community Center",
-//     address: "testing123",
-//     price: "30$/hr",
-//     sports: ["soccer", "volleyball", "basketball", "badminton"],
-//     //image: require("src/assets/fields/field.jpeg"),
-//   },
-// ];
+// interface Field {
+//   id: number;
+//   name: string;
+//   //sports: string[];
+//   sportPitches: any;
+// }
 
 const sports: any[] = [
   {
@@ -220,7 +93,8 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   //const [fields, setFields] = useState([]);
   const [filteredFields, setFilteredFields] = useState<Field[]>([]);
-  const fields = useRef<Field[]>([]);
+  //const fields = useRef<Field[]>([]);
+  //const fields = getFields();
 
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -262,9 +136,9 @@ export default function Home() {
 
     animatedValue.setValue(clamp(-calculatedValue, -TOOLBAR_HEIGHT, 0));
 
-    console.log("ScrollY", ScrollY);
-    console.log("offset:", offset);
-    console.log("transform:", transformValue);
+    // console.log("ScrollY", ScrollY);
+    // console.log("offset:", offset);
+    // console.log("transform:", transformValue);
   };
 
   useEffect(() => {
@@ -273,18 +147,6 @@ export default function Home() {
       transformValue.current = value;
     });
   }, []);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (flatListRef.current) {
-  //       setCurrentIndex((prevIndex) =>
-  //         prevIndex === carouselData.length - 1 ? 0 : prevIndex + 1
-  //       );
-  //     }
-  //   }, 3000); // Change slide every 3 seconds
-
-  //   return () => clearInterval(interval);
-  // }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -308,22 +170,33 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/data/getData");
+        const response = await axios.get(`http://${HOST}:4000/data/getData`);
         //console.log(response.data);
 
         setCarouselData(response.data.ads);
-        fields.current = response.data.fields;
+        //fields.current = response.data.fields;
 
+        setFields(response.data.fields);
         //setFields(response.data.fields);
         const selectedSportName = sports.find((sport) => sport.id === 0)?.sport;
 
-        //console.log(selectedSportName);
-        const filtered_Fields = (fields.current as Field[]).filter((field) =>
-          field.sports.some(
-            (sport: string) =>
-              sport.trim().toLowerCase() === selectedSportName.toLowerCase()
-          )
-        );
+        // const filtered_Fields = (fields.current as Field[]).filter((field) => {
+        //   const sportFields =
+        //     field.sportPitches[
+        //       selectedSportName.toLowerCase().replace(/\s+/g, "")
+        //     ];
+        //   return sportFields && sportFields.length > 0;
+        // });
+
+        const filtered_Fields = (getFields() as Field[]).filter((field) => {
+          const sportFields =
+            field.sportPitches[
+              selectedSportName.toLowerCase().replace(/\s+/g, "")
+            ];
+          return sportFields && sportFields.length > 0;
+        });
+
+        //console.log(filteredFields);
 
         setFilteredFields(filtered_Fields);
         setIsLoaded(true);
@@ -336,7 +209,7 @@ export default function Home() {
   }, []);
 
   const handleScrollEndDrag = (event: any) => {
-    console.log("ScrollEndDrag");
+    //console.log("ScrollEndDrag");
 
     if (ScrollY.current > 0) {
       if (
@@ -357,7 +230,7 @@ export default function Home() {
   };
 
   const handleMomentumScrollEnd = (event: any) => {
-    console.log("MOMENTUM END");
+    //console.log("MOMENTUM END");
 
     if (
       transformValue.current > -TOOLBAR_HEIGHT &&
@@ -375,8 +248,8 @@ export default function Home() {
     }
   };
 
-  const handleCardPress = (cardID: any) => {
-    console.log(cardID);
+  const handleCardPress = (cardID: number) => {
+    //console.log(typeof cardID);
     router.push({
       pathname: ROUTES.FIELD,
       params: { cardID: cardID },
@@ -384,9 +257,6 @@ export default function Home() {
   };
 
   const handleSportClick = (item: any) => {
-    //console.log()
-    //const filteredFields = fields.filter(field => field.sports.includes(selectedSport))
-
     if (item.id === selectedSport) {
       scrollToTopManually();
     }
@@ -396,13 +266,25 @@ export default function Home() {
       (sport) => sport.id === item.id
     )?.sport;
 
-    console.log(selectedSportName);
-    const filtered_Fields = (fields.current as Field[]).filter((field) =>
-      field.sports.some(
-        (sport: string) =>
-          sport.trim().toLowerCase() === selectedSportName.toLowerCase()
-      )
-    );
+    //console.log(selectedSportName);
+    // const filtered_Fields = (fields.current as Field[]).filter((field) =>
+    //   field.sports.some(
+    //     (sport: string) =>
+    //       sport.trim().toLowerCase() === selectedSportName.toLowerCase()
+    //   )
+    // );
+
+    // const filtered_Fields = (fields.current as Field[]).filter((field) => {
+    //   const sportFields =
+    //     field.sportPitches[selectedSportName.toLowerCase().replace(/\s+/g, "")];
+    //   return sportFields && sportFields.length > 0;
+    // });
+
+    const filtered_Fields = (getFields() as Field[]).filter((field) => {
+      const sportFields =
+        field.sportPitches[selectedSportName.toLowerCase().replace(/\s+/g, "")];
+      return sportFields && sportFields.length > 0;
+    });
 
     setFilteredFields(filtered_Fields);
   };
@@ -442,17 +324,9 @@ export default function Home() {
           <Text style={styles.toolbarText}>SoccerApp</Text>
         </View>
 
-        {/* <TextInput
-          style={styles.searchBar}
-          placeholder="Search"
-          value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)}
-        /> */}
-
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          //style={styles.sportsView}
           contentContainerStyle={styles.sportsView}
         >
           {sports.map((item, index) =>
@@ -522,7 +396,6 @@ export default function Home() {
           >
             {carouselData.map((item, index) => (
               <View key={index} style={styles.page}>
-                {/* <Image source={{ uri: item.image }} style={styles.image} /> */}
                 <Image
                   source={require("@/src/assets/fields/Frame_1.jpg")}
                   style={styles.image}
@@ -546,14 +419,18 @@ export default function Home() {
           </View>
         </View>
         <Text>{filteredFields.length}</Text>
-        {filteredFields.map((item, index) => (
-          <FieldCard
-            item={item}
-            index={index}
-            key={index}
-            handleCardPress={handleCardPress}
-          ></FieldCard>
-        ))}
+        {filteredFields.length > 0 ? (
+          filteredFields.map((item, index) => (
+            <FieldCard
+              item={item}
+              index={index}
+              key={index}
+              handleCardPress={handleCardPress}
+            ></FieldCard>
+          ))
+        ) : (
+          <Text>No fields available</Text> // Fallback UI when the array is empty
+        )}
       </Animated.ScrollView>
     </ThemedView>
   );
@@ -561,15 +438,12 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    //borderWidth: 5,
-    //backgroundColor: "#F3FFFA",
-
     paddingTop: 160,
   },
 
   header: {
     height: 75,
-    //backgroundColor: "green",
+
     width: "100%",
     alignItems: "center",
     justifyContent: "flex-end",

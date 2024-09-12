@@ -36,10 +36,12 @@ import {
   StripeProvider,
 } from "@stripe/stripe-react-native";
 import { useStripe } from "@stripe/stripe-react-native";
+import Constants from "expo-constants";
 
 //const [amount, setAmount] = useState(17950);
 
 const amount = 5000;
+const HOST = Constants.expoConfig?.extra?.HOST;
 
 const STRIPE_KEY =
   "pk_test_51PspLo01dzMPlnSknz1idnzFK8PgCZUj5DMTkalN0NQOc3EmehwhYA9MGT3V90jrq8cE1qNAFkcvI2fp2m08RYHY00TX7cwlXF";
@@ -98,7 +100,7 @@ export default function PaymentScreen() {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/payments/intents",
+        `http://${HOST}:4000/payments/intents`,
         { amount: amount },
         {
           headers: {

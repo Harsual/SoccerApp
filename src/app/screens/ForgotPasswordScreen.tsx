@@ -24,10 +24,12 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import BackIcon from "@/src/assets/icons/back.svg";
+import Constants from "expo-constants";
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const HOST = Constants.expoConfig?.extra?.HOST;
 
   const sendResetEmail = async () => {
     if (!email) {
@@ -38,7 +40,7 @@ export default function ForgotPasswordScreen() {
       setErrorMessage("");
       try {
         // Send sign-up request
-        const response = await axios.post("http://localhost:4000/sendReset", {
+        const response = await axios.post(`http://${HOST}:4000/sendReset`, {
           email: email,
         });
 
