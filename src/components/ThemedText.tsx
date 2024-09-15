@@ -6,6 +6,7 @@ import { useFonts } from "expo-font";
 import {
   Poppins_400Regular,
   Poppins_700Bold,
+  Poppins_600SemiBold,
 } from "@expo-google-fonts/poppins";
 
 export type ThemedTextProps = TextProps & {
@@ -30,6 +31,7 @@ export function ThemedText({
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_700Bold,
+    Poppins_600SemiBold,
   });
   let color;
   if (type === "description")
@@ -77,17 +79,21 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_700Bold",
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     //fontWeight: "bold",
     //lineHeight: 32,
-    fontWeight: "600",
-    fontFamily: "Poppins_700Regular",
+    //fontWeight: "600",
+    fontFamily: "Poppins_600SemiBold",
   },
   subtitle: {
-    fontSize: 16,
+    //fontSize: 16,
     //fontWeight: "bold",
-    fontWeight: "200",
-    fontFamily: "Poppins_700Regular",
+    //fontWeight: "200",
+    fontSize: 13,
+    color: "#898F95",
+    lineHeight: 22,
+    fontFamily: "Poppins_400Regular",
+    textAlign: "center",
   },
   description: {
     fontSize: 13,

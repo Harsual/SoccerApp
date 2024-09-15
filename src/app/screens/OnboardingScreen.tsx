@@ -23,10 +23,10 @@ const renderButton = (label: string) => {
   //const label = "Next";
   switch (label) {
     case "Next":
-      return <Button title="Next" /*bottomMargin={30}*/ />;
+      return <Button title="Next" style={{ marginBottom: 30 }} />;
 
     case "Done":
-      return <Button title="Get Started" /*bottomMargin={30}*/ />;
+      return <Button title="Get Started" style={{ marginBottom: 30 }} />;
 
     case "Skip":
       return (
@@ -133,11 +133,11 @@ export default function OnboardingScreen() {
           bottomButton
           activeDotStyle={{
             backgroundColor: Colors[colorScheme ?? "light"].tint,
-            marginBottom: 200,
+            marginBottom: 140,
           }}
           dotStyle={{
             backgroundColor: Colors[colorScheme ?? "light"].tabIconDefault,
-            marginBottom: 200,
+            marginBottom: 140,
           }}
           renderItem={({ item }) => {
             const IconComponent = splashIcons[item.image_index];
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     //fontFamily: "Poppins",
     //lineHeight: 'normal',
     marginTop: 50,
-    fontSize: 20,
+    //fontSize: 25,
     //fontStyle: 'normal',
     //fontWeight: 600,
     //lineHeight: 'normal',
@@ -217,9 +217,11 @@ const styles = StyleSheet.create({
   description: {
     //marginBottom: 100,
     marginTop: 15,
-    width: "80%",
+    //width: "80%",
+    width: 293,
+    //fontSize: 18,
     //alignItems: "center",
-    textAlign: "center",
+    // textAlign: "center",
   },
 
   skipContainer: {

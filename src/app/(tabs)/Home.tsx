@@ -19,7 +19,7 @@ import { SetStateAction, useEffect, useRef, useState } from "react";
 import { router, useNavigation } from "expo-router";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { useScrollToTop } from "@react-navigation/native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+//import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SearchBar } from "react-native-screens";
 import { Colors } from "@/src/constants/Colors";
 import PagerView from "react-native-pager-view";
@@ -30,6 +30,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ROUTES } from "../navigationConstants";
 import { setFields, Field, getFields } from "@/src/app/fieldsStore";
 import Constants from "expo-constants";
+import SportsView from "@/src/components/SportsView";
+//import { FontAwesome5 } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  FontAwesome5,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 
 const HOST = Constants.expoConfig?.extra?.HOST;
 //const Host = "localhost";
@@ -58,26 +65,36 @@ const sports: any[] = [
     id: 0,
     sport: "soccer",
     svg: "sports-soccer",
+    component: MaterialIcons,
+    iconSize: 35,
   },
   {
     id: 1,
     sport: "volleyball",
     svg: "sports-volleyball",
+    component: MaterialIcons,
+    iconSize: 35,
   },
   {
     id: 2,
     sport: "basketball",
     svg: "sports-basketball",
+    component: MaterialIcons,
+    iconSize: 35,
   },
   {
     id: 3,
     sport: "badminton",
     svg: "sports-tennis",
+    component: MaterialIcons,
+    iconSize: 35,
   },
   {
     id: 4,
     sport: "table tennis",
-    svg: "sports-soccer",
+    svg: "table-tennis",
+    component: MaterialCommunityIcons,
+    iconSize: 35,
   },
 ];
 
@@ -329,7 +346,7 @@ export default function Home() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.sportsView}
         >
-          {sports.map((item, index) =>
+          {/* {sports.map((item, index) =>
             !isLoaded ? (
               <ShimmerPlaceHolder
                 visible={false}
@@ -367,7 +384,14 @@ export default function Home() {
                 </Text>
               </Pressable>
             )
-          )}
+          )} */}
+
+          <SportsView
+            sports={sports}
+            onSportPress={handleSportClick}
+            selectedSport={selectedSport}
+            setSelectedSport={setSelectedSport}
+          ></SportsView>
         </ScrollView>
       </Animated.View>
       <Animated.ScrollView
@@ -523,7 +547,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   selectedDot: {
-    backgroundColor: "blue",
+    backgroundColor: Colors["light"].tabIconSelected,
     width: 18,
   },
   unselectedDot: {

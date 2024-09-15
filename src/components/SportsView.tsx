@@ -1,7 +1,9 @@
 import React from "react";
 import { ThemedText } from "./ThemedText";
 import { Pressable, ScrollView, View, Text, StyleSheet } from "react-native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+// import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+// import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+// import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Colors } from "@/src/constants/Colors";
 
 interface SportsViewInputProps {
@@ -9,6 +11,11 @@ interface SportsViewInputProps {
   onSportPress: (item: any) => void;
   selectedSport: number;
   setSelectedSport: React.Dispatch<React.SetStateAction<number>>;
+  // iconComponent: React.ComponentType<{
+  //   name: string;
+  //   size?: number;
+  //   color?: string;
+  // }>;
 }
 
 export default function SportsView({
@@ -16,7 +23,8 @@ export default function SportsView({
   onSportPress,
   selectedSport,
   setSelectedSport,
-}: SportsViewInputProps) {
+}: //iconComponent: IconComponent,
+SportsViewInputProps) {
   return (
     <View>
       <ScrollView
@@ -25,37 +33,45 @@ export default function SportsView({
         //style={styles.sportsView}
         contentContainerStyle={styles.sportsView}
       >
-        {sports.map((item, index) => (
-          <Pressable
-            onPress={() => onSportPress(item)}
-            key={index}
-            style={[
-              styles.sportItemContainer,
-              {
-                backgroundColor:
-                  selectedSport === item.id
-                    ? Colors["light"].tabIconSelected
-                    : "white",
-              },
-            ]}
-          >
-            <MaterialIcons
+        {sports.map((item, index) => {
+          const IconComponent = item.component;
+          return (
+            <Pressable
+              onPress={() => onSportPress(item)}
+              key={index}
+              style={[
+                styles.sportItemContainer,
+                {
+                  backgroundColor:
+                    selectedSport === item.id
+                      ? Colors["light"].tabIconSelected
+                      : "white",
+                },
+              ]}
+            >
+              {/* <MaterialIcons
               name={item.svg}
               size={35}
               color={selectedSport === item.id ? "white" : "black"}
-            />
-            <Text
-              style={{
-                color: selectedSport === item.id ? "white" : "black",
-                fontSize: 12,
-              }}
-              numberOfLines={1}
-              adjustsFontSizeToFit={true}
-            >
-              {item.sport}
-            </Text>
-          </Pressable>
-        ))}
+            /> */}
+              <IconComponent
+                name={item.svg}
+                size={item.iconSize}
+                color={selectedSport === item.id ? "white" : "black"}
+              />
+              <Text
+                style={{
+                  color: selectedSport === item.id ? "white" : "black",
+                  fontSize: 12,
+                }}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+              >
+                {item.sport}
+              </Text>
+            </Pressable>
+          );
+        })}
       </ScrollView>
     </View>
   );

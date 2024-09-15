@@ -4,7 +4,7 @@ import { Redirect } from "expo-router";
 import LogoSplashScreen from "./screens/LogoSplashScreen";
 
 export default function Index() {
-  return <Redirect href={"(tabs)/Home"}></Redirect>;
+  return <Redirect href={"screens/LogoSplashScreen"}></Redirect>;
   //return <LogoSplashScreen></LogoSplashScreen>;
 }
 {

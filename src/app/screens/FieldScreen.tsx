@@ -14,10 +14,12 @@ import {
   Linking,
 } from "react-native";
 
+//import { ScrollView } from "react-native-gesture-handler";
+
 import { router, useLocalSearchParams } from "expo-router";
 
 import PagerView from "react-native-pager-view";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+//import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import ServiceIcon from "@/src/components/ServiceIcon";
@@ -29,6 +31,15 @@ import axios from "axios";
 import { findFieldByID, Field } from "../fieldsStore";
 import Constants from "expo-constants";
 //import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+
+const dateWithoutTimezone = (date: Date) => {
+  const tzoffset = date.getTimezoneOffset() * 60000; //offset in milliseconds
+  const withoutTimezone = new Date(date.valueOf() - tzoffset);
+  // .toISOString()
+  // .slice(0, -1);
+  return withoutTimezone;
+};
 
 export default function FieldScreen() {
   const params = useLocalSearchParams();
@@ -38,6 +49,7 @@ export default function FieldScreen() {
 
   const handleSportClick = (item: any) => {
     setSelectedSport(item);
+    setSelectedPitch(undefined);
   };
 
   const openFacilityMap = () => {
@@ -67,28 +79,66 @@ export default function FieldScreen() {
       id: 0,
       sport: "soccer",
       svg: "sports-soccer",
+      component: MaterialIcons,
+      iconSize: 35,
     },
     {
       id: 1,
       sport: "volleyball",
       svg: "sports-volleyball",
+      component: MaterialIcons,
+      iconSize: 35,
     },
     {
       id: 2,
       sport: "basketball",
       svg: "sports-basketball",
+      component: MaterialIcons,
+      iconSize: 35,
     },
     {
       id: 3,
       sport: "badminton",
       svg: "sports-tennis",
+      component: MaterialIcons,
+      iconSize: 35,
     },
     {
       id: 4,
       sport: "table tennis",
-      svg: "sports-soccer",
+      svg: "table-tennis",
+      component: MaterialCommunityIcons,
+      iconSize: 35,
     },
   ];
+
+  // const sports: any[] = [
+  //   {
+  //     id: 0,
+  //     sport: "soccer",
+  //     svg: "sports-soccer",
+  //   },
+  //   {
+  //     id: 1,
+  //     sport: "volleyball",
+  //     svg: "sports-volleyball",
+  //   },
+  //   {
+  //     id: 2,
+  //     sport: "basketball",
+  //     svg: "sports-basketball",
+  //   },
+  //   {
+  //     id: 3,
+  //     sport: "badminton",
+  //     svg: "sports-tennis",
+  //   },
+  //   {
+  //     id: 4,
+  //     sport: "table tennis",
+  //     svg: "sports-soccer",
+  //   },
+  // ];
 
   // const fieldInfo = {
   //   id: 1,
@@ -114,13 +164,15 @@ export default function FieldScreen() {
   const pagerRef = useRef<PagerView>(null);
   const [selectedPage, setSelectedPage] = useState(0);
   const [selectedSport, setSelectedSport] = useState(sports[0]);
-  const [selectedPitch, setSelectedPitch] = useState(0);
+  const [selectedPitch, setSelectedPitch] = useState();
   const [selectedTime, setSelectedTime] = useState<undefined | number>();
   const [showBookButton, setShowBookButton] = useState(false);
   const [bookDate, setBookDate] = useState<Date>(new Date());
   const [timesAvail, setTimesAvail] = useState<undefined | string[]>([]);
   const HOST = Constants.expoConfig?.extra?.HOST;
+
   const onChange = (event: any, selectedDate?: Date) => {
+    const selectedDateWOzone = dateWithoutTimezone(selectedDate ?? bookDate);
     if (Platform.OS === "android") {
       if (event.type === "dismissed") {
         // Handle the cancel event
@@ -129,14 +181,14 @@ export default function FieldScreen() {
       }
 
       if (event.type === "set") {
-        setBookDate(selectedDate ?? bookDate);
+        setBookDate(selectedDateWOzone);
         //setShowPicker(false); // Close the modal after date is picked
       }
     }
 
     //const currentDate = selectedDate || birthdate;
     //setShowPicker(Platform.OS === "ios");
-    setBookDate(selectedDate ?? bookDate);
+    setBookDate(selectedDateWOzone);
     //setShowPicker(false);
   };
 
@@ -157,6 +209,7 @@ export default function FieldScreen() {
 
   useEffect(() => {
     const fetchAvailableTimes = async () => {
+      console.log(bookDate.toISOString());
       if (selectedSport && selectedPitch !== undefined && bookDate) {
         try {
           const response = await axios.get(
@@ -206,7 +259,17 @@ export default function FieldScreen() {
       >
         
       </View> */}
-      <ScrollView style={{ backgroundColor: Colors["light"].background }}>
+      <ScrollView
+        style={{
+          backgroundColor: Colors["light"].background,
+        }}
+
+        //contentContainerStyle={{ marginBottom: 20 }}
+        // gestureHandlerProps={{
+        //   // Make sure to allow the parent gesture to work when the scroll view is not handling it
+        //   simultaneousHandlers: ["stack"],
+        // }}
+      >
         <View style={styles.adContainer}>
           <PagerView
             style={styles.pagerView}
@@ -348,6 +411,7 @@ export default function FieldScreen() {
           mode="date"
           //is24Hour={true}
           display="default"
+          minimumDate={bookDate}
           //onChange={() => setBookDate}
           onChange={onChange}
           style={{
@@ -370,7 +434,8 @@ export default function FieldScreen() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            //style={styles.sportsView}
+            style={{ borderWidth: 2 }}
+            contentContainerStyle={{ marginBottom: 150 }}
           >
             {timesAvail?.map((item, index) => (
               <Pressable
@@ -400,7 +465,7 @@ export default function FieldScreen() {
             ))}
           </ScrollView>
         </View>
-        {showBookButton && (
+        {/* {showBookButton && (
           <View
             style={{
               position: "absolute",
@@ -417,9 +482,27 @@ export default function FieldScreen() {
             <ThemedText style={{ fontSize: 25 }}>55$</ThemedText>
             <Button title={"Book Now"} onPress={handleBookingPress}></Button>
           </View>
-        )}
+        )} */}
         {/* </ThemedView> */}
       </ScrollView>
+      {showBookButton && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            backgroundColor: "white",
+            width: "100%",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingBottom: 30,
+            paddingHorizontal: 10,
+          }}
+        >
+          <ThemedText style={{ fontSize: 25 }}>55$</ThemedText>
+          <Button title={"Book Now"} onPress={handleBookingPress}></Button>
+        </View>
+      )}
     </View>
   );
 }

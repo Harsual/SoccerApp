@@ -13,7 +13,7 @@ export type NewButtonProps = ButtonProps & {
 };
 
 export default function Button({
-  bottomMargin,
+  //bottomMargin,
   onPress,
   title = "button",
   style,
@@ -33,7 +33,7 @@ export default function Button({
       <Pressable
         onPress={onPress}
         style={[
-          { backgroundColor: color, marginBottom: bottomMargin },
+          { backgroundColor: color /*marginBottom: bottomMargin*/ },
           styles.button,
           style,
         ]}
@@ -45,7 +45,7 @@ export default function Button({
     return (
       <View
         style={[
-          { backgroundColor: color, marginBottom: bottomMargin },
+          { backgroundColor: color /*marginBottom: bottomMargin*/ },
           styles.button,
           style,
         ]}

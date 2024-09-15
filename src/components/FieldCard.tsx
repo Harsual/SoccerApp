@@ -1,5 +1,6 @@
 import { View, StyleSheet, Image, Pressable } from "react-native";
 import { ThemedText } from "./ThemedText";
+import { Colors } from "../constants/Colors";
 
 interface FieldCardProps {
   item: any;
@@ -28,10 +29,38 @@ export default function FieldCard({
           style={styles.image}
         />
       </View>
-      <ThemedText style={{ marginTop: 10 }}>{item.name}</ThemedText>
+      <ThemedText type="default" style={{ marginTop: 10 }}>
+        {item.name}
+      </ThemedText>
       <View style={styles.description}>
         <ThemedText type="description">{item.address}</ThemedText>
-        <ThemedText type="subtitle">{item.price}</ThemedText>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            //borderWidth: 2,
+            //height: 50,
+          }}
+        >
+          <ThemedText type="default" style={{ fontSize: 13 }}>
+            {"from "}{" "}
+          </ThemedText>
+          <ThemedText
+            type="title"
+            style={{
+              color: Colors.light.tabIconSelected,
+              fontSize: 20,
+              alignSelf: "flex-start",
+              top: -5,
+            }}
+          >
+            {item.price}
+          </ThemedText>
+          <ThemedText type="default" style={{ fontSize: 13 }}>
+            {"/hr"}
+          </ThemedText>
+        </View>
+        {/* <ThemedText type="title">{"From " + item.price}</ThemedText> */}
       </View>
     </Pressable>
     // </View>

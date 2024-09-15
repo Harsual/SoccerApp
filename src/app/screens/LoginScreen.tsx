@@ -98,7 +98,7 @@ export default function LoginScreen() {
       //await SecureStore.setItemAsync("jwt", token);
       console.log(message);
 
-      router.push({
+      router.replace({
         pathname: ROUTES.HOME,
       });
       //console.log("Signed up successfully");
